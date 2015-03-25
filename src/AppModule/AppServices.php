@@ -35,6 +35,8 @@ class AppServices implements ServiceProviderInterface
       
       $connectionParams = array(
         'url' => $c['db_url'],
+        // Need for limits
+        'driverOptions' => [\PDO::ATTR_EMULATE_PREPARES => false],
       );
       
       $conn = \Doctrine\DBAL\DriverManager::getConnection($connectionParams, $config);

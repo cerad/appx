@@ -53,7 +53,7 @@ class App
     // Match route
     $matcher = $this->container['route_matcher'];
     
-    $match = $matcher->matchRequest($request); print_r($match);
+    $match = $matcher->matchRequest($request);
 
     $request->attributes->add($match);
     
@@ -79,8 +79,16 @@ class App
 }
 $app = new App();
 
-$request1 = Request::create('/referees/42','PUT',array('name' => 'Fabien'));
-$app->dispatch($request1);
+$request = Request::createFromGlobals();
+$response = $app->dispatch($request);
+$response->send();
+
+/*
+$request1  = Request::create('/referees/42','GET',array('name' => 'Fabien'));
+$response1 = $app->dispatch($request1);
+if (is_object($response1)); //$response1->send();
 
 $request2 = Request::create('/referees','GET',array('name' => 'Fabien'));
-$app->dispatch($request2);
+$response2 = $app->dispatch($request2);
+if (is_object($response2)) $response2->send();
+*/
