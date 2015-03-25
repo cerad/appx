@@ -19,6 +19,7 @@ class RefereeController
     switch($request->getMethod())
     {
       case 'GET':
+      case 'OPTIONS':
         return $id ? $this->getOneAction($request,$id) : $this->searchAction($request);
     }
   //echo "RefereeController mainAction $id {$request->getMethod()}\n";

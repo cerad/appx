@@ -1,17 +1,14 @@
 <?php
 
-namespace Cerad\Module\AppModule;
+namespace Cerad\Module\FrameworkModule;
 
 use Pimple\Container;
 use Pimple\ServiceProviderInterface;
 
-// TODO: Maybe move some of these to FrameworkModule?
-class AppServices implements ServiceProviderInterface
+class FrameworkServices implements ServiceProviderInterface
 {
   public function register(Container $container)
   {
-    return;
-    
     // Request/Routes
     $container['request_stack'] = function($c)
     {
@@ -44,6 +41,16 @@ class AppServices implements ServiceProviderInterface
       $conn = \Doctrine\DBAL\DriverManager::getConnection($connectionParams, $config);
       
       return $conn;
+    };
+    $container['event_dispatcher'] = function($c)
+    {
+      return new \Symfony\Component\EventDispatcher\EventDispatcher();
+    };
+    $container['container_tags'] = [];
+    
+    $container['kernel_cors_listener'] = function()
+    {
+      return new \Cerad\Module\FrameworkModule\EventListener\CORSListener();
     };
   }
 }
