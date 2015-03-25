@@ -4,100 +4,75 @@ require '../vendor/autoload.php';
 
 use Pimple\Container;
 
-use Symfony\Component\Routing\Generator\UrlGenerator;
-use Symfony\Component\Routing\Matcher\UrlMatcher;
-use Symfony\Component\Routing\RequestContext;
+//  Symfony\Component\Routing\Generator\UrlGenerator;
+//  Symfony\Component\Routing\Matcher\UrlMatcher;
+//  Symfony\Component\Routing\RequestContext;
 use Symfony\Component\Routing\RouteCollection;
-use Symfony\Component\Routing\Route;
+//  Symfony\Component\Routing\Route;
 
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\RequestStack;
+//  Symfony\Component\HttpFoundation\RequestStack;
 
-class App extends Container
+use Cerad\Module\AppModule\AppServices;
+use Cerad\Module\AppModule\AppParameters;
+
+use Cerad\Module\RefereeModule\RefereeRoutes;
+use Cerad\Module\RefereeModule\RefereeServices;
+
+class App
 {
+  protected $container;
+  
   public function __construct()
   {
-    parent::__construct();
+    $this->container = $container = new Container();
     
     $routes = new RouteCollection();
 
-    $routes->add('referee_get',  new Route(
-      '/referees/{id}',
-      ['_controller' => 'referee_controller', '_action'=> 'getAction'],
-      [],[],'',[],
-      ['GET']
-    ));
-    $routes->add('referee_put',  new Route(
-      '/referees/{id}',
-      ['_controller' => 'referee_controller'],
-      [],[],'',[],
-      ['PUT']
-    ));
-    $routes->add('referee_post',  new Route(
-      '/referees/{id}',
-      ['_controller' => 'referee_controller', '_action'=> 'postAction'],
-      [],[],'',[],
-      ['POST']
-    ));
-    $routes->add('referee_delete',  new Route(
-      '/referees/{id}',
-      ['_controller' => 'referee_controller', '_action'=> 'deleteAction'],
-      [],[],'',[],
-      ['DELETE']
-    ));
-    // One route, switch in controller
-    $routes->add('referees',  new Route(
-      '/referees',
-      ['_controller' => 'referee_controller']
-    ));
+    $refereeRoutes = new RefereeRoutes();
+    $refereeRoutes->register($routes);
     
-    $this['routes'] = $routes;
+    $container['routes'] = $routes;
+
+    // Parameters and services
+    $appParameters = new AppParameters();
+    $appParameters->register($container);
     
-    // Request/Routes
-    $this['request_stack'] = function($c)
-    {
-      return new RequestStack();
-    };
-    $this['request_context'] = function($c)
-    {
-      $context = new RequestContext();
-      $context->fromRequest($c['request_stack']->getMasterRequest());
-      return $context;
-    };
-    $this['route_matcher'] = function($c)
-    {
-      return new UrlMatcher($c['routes'], $c['request_context']);
-    };
-    $this['route_generator'] = function($c)
-    {
-      return new UrlGenerator($c['routes'], $c['request_context']);
-    };
-    // Controllers
-    $this['referee_controller'] = function($c)
-    {
-      return new Cerad\Module\RefereeModule\RefereeController();
-    };
+    $appServices = new AppServices();
+    $appServices->register($container);
+    
+    $refereeServices = new RefereeServices();
+    $refereeServices->register($container);
+    
   }
   public function dispatch(Request $request)
   {
     // Add request
-    $this['request_stack']->push($request);
+    $this->container['request_stack']->push($request);
     
     // Match route
-    $matcher = $this['route_matcher'];
+    $matcher = $this->container['route_matcher'];
     
     $match = $matcher->matchRequest($request); print_r($match);
 
     $request->attributes->add($match);
     
-    $controller = $this[$match['_controller']];
+    // Use callable and maybe a function?
+    $controller = $this->container[$match['_controller_id']];
     
-    $action = isset($match['_action']) ? $match['_action'] : 'mainAction';
+    $actionName = isset($match['_action_name']) ? $match['_action_name'] : 'mainAction';
     
-    $response = $controller->$action($request);
+    $response = $controller->$actionName($request);
+    
+    // Quick test
+    /*
+    $db = $this->container['database_connection'];
+    $row = $db->query('SELECT count(*) AS count FROM referees;')->fetch();
+    print_r($row);
+    */
     
     // Clean up
-    $this['request_stack']->pop($request);
+    $this->container['request_stack']->pop($request);
     
     return $response;
   }
