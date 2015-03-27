@@ -12,6 +12,6 @@ class AppParameters implements ServiceProviderInterface
   {
     $container['secret'] = 'someSecret';
     
-    $container['db_url'] = 'mysql://impd:impd894@localhost/persons';
+    $container['db_url'] = 'mysql://USER:PASSWORD@localhost/persons';
   }
 }
