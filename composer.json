@@ -1,7 +1,11 @@
 {
     "name": "cerad/appx",
     "autoload": {
-        "psr-4": { "Cerad\\Module\\": "src/" }
+        "psr-4": 
+          { 
+            "Cerad\\Module\\": "src/" ,
+            "Cerad\\Component\\": "src/" 
+          }
     },
     "require": {
         "symfony/routing": "~2.6",
