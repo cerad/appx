@@ -1,8 +1,18 @@
+DirectoryIndex disabled xxx
+
 RewriteEngine On
 
 # Serve existing files
 RewriteCond %{REQUEST_FILENAME} -f
 RewriteRule .? - [L]
+
+RewriteCond %{REQUEST_URI} ^/$
+#ewriteCond    index.php -f
+#ewriteRule .? index.php [L]
+
+RewriteCond %{REQUEST_URI} ^/$
+RewriteCond    index.html -f
+RewriteRule .? index.html [L]
 
 # Note that index.php or index.html will kickoff if they exist
 
