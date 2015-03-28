@@ -1,5 +1,6 @@
 <?php
 
+// So we don't need to rely on rewrites
 if ($_SERVER["REQUEST_URI"] == '/')
 {
   if (file_exists('./index.php' )) { require 'index.php';  return; }
