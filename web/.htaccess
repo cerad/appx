@@ -1,0 +1,11 @@
+RewriteEngine On
+
+# Serve existing files
+RewriteCond %{REQUEST_FILENAME} -f
+RewriteRule .? - [L]
+
+# Note that index.php or index.html will kickoff if they exist
+
+# Otherwise use front controller
+RewriteRule .? app.php [L]
+
