@@ -6,9 +6,9 @@ RewriteEngine On
 RewriteCond %{REQUEST_FILENAME} -f
 RewriteRule .? - [L]
 
-# For / serve index.html if it exists
-RewriteCond %{DOCUMENT_ROOT}/index\.php -f [NC]
-RewriteRule ^/?$ index.php [L]
+# For / serve index.php if it exists
+# RewriteCond %{DOCUMENT_ROOT}/index\.php -f [NC]
+# RewriteRule ^/?$ index.php [L]
 
 # For / serve index.html if it exists
 RewriteCond %{DOCUMENT_ROOT}/index\.html -f [NC]
