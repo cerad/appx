@@ -11,8 +11,8 @@ RewriteRule .? - [L]
 # RewriteRule ^/?$ index.php [L]
 
 # For / serve index.html if it exists
-RewriteCond %{DOCUMENT_ROOT}/index\.html -f [NC]
-RewriteRule ^/?$ index.html [L]
+# RewriteCond %{DOCUMENT_ROOT}/index\.html -f [NC]
+# RewriteRule ^/?$ index.html [L]
 
 # Note that index.php or index.html will kickoff if they exist
 
