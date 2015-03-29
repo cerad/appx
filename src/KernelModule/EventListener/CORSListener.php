@@ -1,12 +1,12 @@
 <?php
-namespace Cerad\Module\FrameworkModule\EventListener;
+namespace Cerad\Module\KernelModule\EventListener;
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 use Symfony\Component\HttpFoundation\Response;
 
-use Cerad\Module\FrameworkModule\Event\KernelRequestEvent;
-use Cerad\Module\FrameworkModule\Event\KernelResponseEvent;
+use Cerad\Module\KernelModule\Event\KernelRequestEvent;
+use Cerad\Module\KernelModule\Event\KernelResponseEvent;
 
 class CORSListener implements EventSubscriberInterface
 {
@@ -18,17 +18,19 @@ class CORSListener implements EventSubscriberInterface
       KernelResponseEvent::name => [['onKernelResponse',  0]],
     ];
   }
+  protected $maxAge = 86400; //3600 * 24;
   public function onKernelRequest(KernelRequestEvent $event)
   {
-    $request = $event->getRequest();
+    if (!$event->isMasterRequest()) return;
     
     if ($event->getRequest()->getMethod() !== 'OPTIONS') return;
     
     $response = new Response();
     $response->headers->set('Access-Control-Allow-Headers','Content-Type, Authorization');
     $response->headers->set('Access-Control-Allow-Methods','GET, POST, PUT, DELETE, PATCH, OPTIONS');
-    $response->headers->set('Access-Control-Allow-Origin', '*');
-    $response->setMaxAge(3600 * 24);
+    $response->headers->set('Access-Control-Allow-Origin', '*'); // Maybe pull from request
+    
+    if ($this->maxAge) $response->setMaxAge($this->maxAge);
     
     $event->setResponse($response);
     $event->stopPropagation();

@@ -1,14 +1,19 @@
 <?php
 
-namespace Cerad\Module\FrameworkModule;
+namespace Cerad\Module\KernelModule;
 
-use Pimple\Container;
-use Pimple\ServiceProviderInterface;
-
-class FrameworkServices implements ServiceProviderInterface
+class KernelServices
 {
-  public function register(Container $container)
+  public function __construct($container)
   {
+    // Me
+    $container['kernel'] = $this;
+    
+    // Routes
+    $container['routes'] = function($c)
+    {
+      return new \Symfony\Component\Routing\RouteCollection();
+    };
     // Request/Routes
     $container['request_stack'] = function($c)
     {
@@ -50,7 +55,8 @@ class FrameworkServices implements ServiceProviderInterface
     
     $container['kernel_cors_listener'] = function()
     {
-      return new \Cerad\Module\FrameworkModule\EventListener\CORSListener();
+      return new \Cerad\Module\KernelModule\EventListener\CORSListener();
     };
   }
+
 }

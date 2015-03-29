@@ -2,13 +2,10 @@
 
 namespace Cerad\Module\AppModule;
 
-use Pimple\Container;
-use Pimple\ServiceProviderInterface;
-
-// Private parameters, do not check in
-class AppParameters implements ServiceProviderInterface
+// Copy to AppParameters
+class AppParameters
 {
-  public function register(Container $container)
+  public function __construct($container)
   {
     $container['secret'] = 'someSecret';
     

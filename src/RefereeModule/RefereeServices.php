@@ -2,12 +2,9 @@
 
 namespace Cerad\Module\RefereeModule;
 
-use Pimple\Container;
-use Pimple\ServiceProviderInterface;
-
-class RefereeServices implements ServiceProviderInterface
+class RefereeServices
 {
-  public function register(Container $container)
+  public function __construct($container)
   {
     $container['referee_repository'] = function($c)
     {

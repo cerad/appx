@@ -1,0 +1,75 @@
+services:
+  
+  # app.php
+  routes:
+    class: \Symfony\Component\Routing\RouteCollection
+    
+  # FrameworkServices
+  request_stack:
+    class: \Symfony\Component\HttpFoundation\RequestStack
+
+  request_context:
+    class: \Symfony\Component\Routing\RequestContext
+    method: fromRequest request_stack.getMasterRequest
+    
+  route_matcher:
+    class: \Symfony\Component\Routing\Matcher\UrlMatcher
+    args:
+      - routes
+      - request_context
+      
+  route_generator:
+    class: \Symfony\Component\Routing\Generator\UrlGenerator
+    args:
+      - routes
+      - request_context
+      
+  database_connection:
+    class1: \Doctrine\DBAL\Configuration
+    class2: \Doctrine\DBAL\DriverManager::getConnection
+    
+  event_dispatcher:
+    class: \Symfony\Component\EventDispatcher\EventDispatcher
+    
+  container_tags:
+    class: TBD
+    
+  kernel_cors_listener:
+    class: \Cerad\Module\FrameworkModule\EventListener\CORSListener
+    tags: kernel_listener
+    
+kernel:
+  AppKernel extends Symfony\Component\HttpKernel\Kernel
+    enviroment and debug
+    boots on first handle request
+  Kernel has Symfony\Component\HttpKernel\HttpKernel in container
+  HttpKernel
+    constructor
+      event_dispatcher
+      Symfony\Component\HttpKernel\Controller\ControllerResolverInterface
+      request_stack
+  HttpKernelInterface handle and MASTER/SUB requests
+      handle(Request $request, $type = self::MASTER_REQUEST, $catch = true)
+      
+workflow:
+  new AppKernel
+    set env and debug
+    
+  handle request
+  
+    boot on first - do kernel then app
+      add services
+        KernelServices
+        AppServices
+        Module Services
+      add routes
+        Module Services
+      add events
+      
+    push request onto stack
+    cors listener - finish on response  doRequestListeners
+    match route
+    execute action
+    cors listener                       doResponseListeners
+    pop request
+    

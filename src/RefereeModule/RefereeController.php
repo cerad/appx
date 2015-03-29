@@ -14,6 +14,7 @@ class RefereeController
   }
   public function mainAction(Request $request)
   {
+    die('Not needed');
     $id = $request->attributes->has('id') ? $request->attributes->get('id') : null;
     
     switch($request->getMethod())
