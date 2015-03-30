@@ -7,56 +7,59 @@ class KernelServices
   public function __construct($container)
   {
     // Me
-    $container['kernel'] = $this;
+    $container->set('kernel',$this);
     
     // Routes
-    $container['routes'] = function($c)
+    $container->set('routes',function($c)
     {
       return new \Symfony\Component\Routing\RouteCollection();
-    };
+    });
     // Request/Routes
-    $container['request_stack'] = function($c)
+    $container->set('request_stack',function($c)
     {
       return new \Symfony\Component\HttpFoundation\RequestStack();
-    };
-    $container['request_context'] = function($c)
+    });
+    $container->set('request_context',function($c)
     {
       $context = new \Symfony\Component\Routing\RequestContext();
-      $context->fromRequest($c['request_stack']->getMasterRequest());
+      $context->fromRequest($c->get('request_stack')->getMasterRequest());
       return $context;
-    };
-    $container['route_matcher'] = function($c)
+    });
+    $container->set('route_matcher',function($c)
     {
-      return new \Symfony\Component\Routing\Matcher\UrlMatcher($c['routes'], $c['request_context']);
-    };
-    $container['route_generator'] = function($c)
+      return new \Symfony\Component\Routing\Matcher\UrlMatcher(
+        $c->get('routes'), 
+        $c->get('request_context')
+      );
+    });
+    $container->set('route_generator', function($c)
     {
-      return new \Symfony\Component\Routing\Generator\UrlGenerator($c['routes'], $c['request_context']);
-    };
-    $container['database_connection'] = function($c)
+      return new \Symfony\Component\Routing\Generator\UrlGenerator(
+        $c->get('routes'), 
+        $c->get('request_context')
+      );
+    });
+    $container->set('database_connection',function($c)
     {
       $config = new \Doctrine\DBAL\Configuration();
       
-      $connectionParams = array(
-        'url' => $c['db_url'],
-        // Need for limits
-        'driverOptions' => [\PDO::ATTR_EMULATE_PREPARES => false],
-      );
-      
+      $connectionParams = 
+      [
+        'url' => $c->get('db_url'),
+        'driverOptions' => [\PDO::ATTR_EMULATE_PREPARES => false], // For limits
+      ];
       $conn = \Doctrine\DBAL\DriverManager::getConnection($connectionParams, $config);
       
       return $conn;
-    };
-    $container['event_dispatcher'] = function($c)
+    });
+    $container->set('event_dispatcher',function($c)
     {
       return new \Symfony\Component\EventDispatcher\EventDispatcher();
-    };
-    $container['container_tags'] = [];
-    
-    $container['kernel_cors_listener'] = function()
+    });
+    $container->set('kernel_cors_listener',function()
     {
       return new \Cerad\Module\KernelModule\EventListener\CORSListener();
-    };
+    },'kernel_event_listener');
   }
 
 }

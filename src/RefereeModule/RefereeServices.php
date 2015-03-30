@@ -6,13 +6,19 @@ class RefereeServices
 {
   public function __construct($container)
   {
-    $container['referee_repository'] = function($c)
+    $container->set('referee_repository',function($c)
     {
-      return new \Cerad\Module\RefereeModule\RefereeRepository($c['database_connection']);
-    };
-    $container['referee_controller'] = function($c)
+      return new \Cerad\Module\RefereeModule\RefereeRepository($c->get('database_connection'));
+    });
+    $container->set('referee_controller',function($c)
     {
-      return new \Cerad\Module\RefereeModule\RefereeController($c['referee_repository']);
+      return new \Cerad\Module\RefereeModule\RefereeController($c->get('referee_repository'));
+    });
+    $routes = function($c)
+    {
+      
     };
+    $container->set('referee_routes',$routes,'routes');
+    
   }
 }

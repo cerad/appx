@@ -7,8 +7,8 @@ class AppParameters
 {
   public function __construct($container)
   {
-    $container['secret'] = 'someSecret';
+    $container->set('secret','someSecret');
     
-    $container['db_url'] = 'mysql://USER:PASSWORD@localhost/persons';
+    $container->set('db_url','mysql://USER:PASSWORD@localhost/persons');
   }
 }

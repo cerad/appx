@@ -2,11 +2,10 @@
 
 namespace Cerad\Module\KernelModule;
 
-use Pimple\Container;
-
 use Symfony\Component\HttpFoundation\Request;
 //  Symfony\Component\HttpFoundation\Response;
 
+use Cerad\Module\KernelModule\KernelContainer;
 use Cerad\Module\KernelModule\Event\KernelRequestEvent;
 use Cerad\Module\KernelModule\Event\KernelResponseEvent;
 
@@ -24,28 +23,48 @@ class KernelApp
   {
     $this->environment = $environment;
     $this->debug = (bool)$debug;
-  }   
+  }
+  public function getContainer() { return $this->container; }
+  
+  // Make this public for testing
   private function boot()
   {
     if ($this->booted) return;
     
-    $this->container = $container = new Container();
+    $this->container = new KernelContainer();
     
-    $this->registerServices      ($container);
-    $this->registerRoutes        ($container, $container['routes']);
-    $this->registerEventListeners($container['event_dispatcher']);
+    $this->registerServices      ();
+    $this->registerRoutes        ();
+    $this->registerEventListeners();
     
     $this->booted = true;
   }
-  protected function registerServices($container)
+  protected function registerServices()
   {
-    new KernelServices($container);
+    new KernelServices($this->container);
   }
-  protected function registerRoutes($container,$routes)
+  protected function registerRoutes()
   {
+    $container = $this->container;
+    
+    $routes = $container->get    ('routes');
+    $tags   = $container->getTags('routes');
+    foreach($tags as $tag)
+    {
+      $routes->addCollection($container->get($tag['service_id']));
+    }
   }
-  protected function registerEventListeners($dispatcher)
+  protected function registerEventListeners()
   {
+    $container = $this->container;
+    
+    $dispatcher = $container->get    ('event_dispatcher');
+    $tags       = $container->getTags('kernel_event_listener');
+    foreach($tags as $tag)
+    {
+      $listener = $container->get($tag['service_id']);
+      $dispatcher->addSubscriber($listener);
+    }
   }
   // TODO add exception wrapper
   public function handle(Request $request, $requestType = self::REQUEST_TYPE_MASTER, $catch = true)
@@ -54,18 +73,18 @@ class KernelApp
     if (!$this->booted) $this->boot();
     
     // Add request
-    $requestStack = $this->container['request_stack'];
+    $requestStack = $this->container->get('request_stack');
     $requestStack->push($request);
     
-    // Dispatcher
-    $dispatcher = $this->container['event_dispatcher'];
-    
     // Match the route
-    $matcher = $this->container['route_matcher'];
+    $matcher = $this->container->get('route_matcher');
     $match   = $matcher->matchRequest($request);
     $request->attributes->add($match);
     
-    // Dispatch request event
+    // Dispatcher
+    $dispatcher = $this->container->get('event_dispatcher');
+    
+     // Dispatch request event
     $response = $this->dispatchRequest($dispatcher,$request,$requestType);
     if ($response)
     {

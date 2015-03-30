@@ -9,6 +9,7 @@ use Symfony\Component\HttpFoundation\Request;
 class AppTest extends \PHPUnit_Framework_TestCase
 {
   private $app;
+  private $resource = '/api/referees';
   
   public function setUp()
   {
@@ -16,7 +17,7 @@ class AppTest extends \PHPUnit_Framework_TestCase
   }
   public function testCorsPreflight()
   {
-    $request  = Request::create('/referees/42','OPTIONS');
+    $request  = Request::create($this->resource . '/42','OPTIONS');
     
     // Need these for CORS
     $origin = 'test';
@@ -31,7 +32,7 @@ class AppTest extends \PHPUnit_Framework_TestCase
   {
     $id = 42;
     
-    $request  = Request::create('/referees/' . $id,'GET');
+    $request  = Request::create($this->resource . '/' . $id,'GET');
 
     $response = $this->app->handle($request);
     
@@ -44,13 +45,32 @@ class AppTest extends \PHPUnit_Framework_TestCase
   {
     $ussfId = '2014100800555735';
     
-    $request  = Request::create('/referees/' . $ussfId,'GET');
+    $url1 = $this->resource . '/' . $ussfId;
+    
+    $request  = Request::create($url1,'GET');
 
     $response = $this->app->handle($request);
     
     $item = json_decode($response->getContent(),true);
     
     $this->assertEquals($ussfId, $item['ussf_id']);
+    
+    $container = $this->app->getContainer();
+    $routeGenerator = $container->get('route_generator');
+    
+    $url2 = $routeGenerator->generate('referee_resource_one', ['id' => $ussfId]);
+    $this->assertEquals($url1,$url2);
+     
+  }
+  public function testAll()
+  {
+    $request  = Request::create($this->resource,'GET');
+
+    $response = $this->app->handle($request);
+    
+    $items = json_decode($response->getContent(),true);
+    
+    $this->assertEquals(3, count($items));
   
   }
 }
