@@ -19,16 +19,29 @@ class CORSListener implements EventSubscriberInterface
     ];
   }
   protected $maxAge = 86400; //3600 * 24;
+  protected $allowOrigin = null;
+  
+  protected function addCorsHeaders($response)
+  {
+    $response->headers->set('Access-Control-Allow-Headers','Content-Type, Authorization');
+    $response->headers->set('Access-Control-Allow-Methods','GET, POST, PUT, DELETE, PATCH, OPTIONS');
+    $response->headers->set('Access-Control-Allow-Origin', $this->allowOrigin); // Maybe pull from request    
+  }
   public function onKernelRequest(KernelRequestEvent $event)
   {
     if (!$event->isMasterRequest()) return;
     
+    // Only interested in preflights
     if ($event->getRequest()->getMethod() !== 'OPTIONS') return;
     
+    // CORS Must have Origin header
+    $request = $event->getRequest();
+    $this->allowOrigin = $request->headers->get('Origin');
+    if (!$this->allowOrigin) return;
+
+    // It's a prefilght
     $response = new Response();
-    $response->headers->set('Access-Control-Allow-Headers','Content-Type, Authorization');
-    $response->headers->set('Access-Control-Allow-Methods','GET, POST, PUT, DELETE, PATCH, OPTIONS');
-    $response->headers->set('Access-Control-Allow-Origin', '*'); // Maybe pull from request
+    $this->addCorsHeaders($response);
     
     if ($this->maxAge) $response->setMaxAge($this->maxAge);
     
@@ -37,13 +50,11 @@ class CORSListener implements EventSubscriberInterface
   }
   public function onKernelResponse(KernelResponseEvent $event)
   {
+    if (!$event->hasResponse() || !$this->allowOrigin) return null;
+    
     $response = $event->getResponse();
     
-    if (!$response) return;
-    
     // No explicit cache control
-    $response->headers->set('Access-Control-Allow-Headers','Content-Type, Authorization');
-    $response->headers->set('Access-Control-Allow-Methods','GET, POST, PUT, DELETE, PATCH, OPTIONS');
-    $response->headers->set('Access-Control-Allow-Origin', '*');
+    $this->addCorsHeaders($response);
   }
 }

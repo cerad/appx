@@ -2,3 +2,4 @@
 /vendor/
 /nbproject/private/
 /src/AppModule/AppParameters.php
+/phpunit.xml

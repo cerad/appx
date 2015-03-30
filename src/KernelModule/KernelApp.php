@@ -69,10 +69,11 @@ class KernelApp
     $response = $this->dispatchRequest($dispatcher,$request,$requestType);
     if ($response)
     {
-      $responsex = $this->dispatchResponse($dispatcher,$request,$response);
+    //$responsex = $this->dispatchResponse($dispatcher,$request,$response);
       $requestStack->pop($request);
-      return $responsex;
+      return $response;
     }
+    // Process factories
     
     // Try action function
     $action = $request->attributes->get('_action');

@@ -14,8 +14,8 @@ class RefereeRepository
   {
     if (!$id) return null;
     
-    $sql = 'SELECT * FROM referees WHERE id = ?;';
-    $stmt = $this->db->executeQuery($sql,[$id]);
+    $sql = 'SELECT * FROM referees WHERE id = ? OR ussf_id = ?;';
+    $stmt = $this->db->executeQuery($sql,[$id,$id]);
     $rows = $stmt->fetchAll();
     return (count($rows) == 1) ? $rows[0] : null;
   }
