@@ -84,7 +84,7 @@ class AppTest extends \PHPUnit_Framework_TestCase
     $this->assertEquals('application/json', $response->headers->get('Content-Type'));
 
     $responsePayload = json_decode($response->getContent(),true);
-    $jwt = $responsePayload['authToken'];
+    $jwt = $responsePayload['auth_token'];
     
     return $jwt;
   }

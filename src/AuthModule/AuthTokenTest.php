@@ -64,7 +64,7 @@ class AuthTokenTest extends \PHPUnit_Framework_TestCase
     
     $responsePayload = json_decode($response->getContent(),true);
     
-    $authJWT = $responsePayload['authToken'];
+    $authJWT = $responsePayload['auth_token'];
     
     $authPayload = $jwtCoder->decode($authJWT);
     $this->assertEquals('ahundiak',$authPayload['username']);

@@ -21,10 +21,11 @@ class AuthTokenController
     $requestPayload = json_decode($request->getContent(),true);
     
     $username = $requestPayload['username'];
+    $password = $requestPayload['password'];
     
     $user = $this->userProvider->loadUserByUsername($username);
     
-    $this->userPasswordEncoder->isPasswordValid($user,$requestPayload['password']);
+    $this->userPasswordEncoder->isPasswordValid($user,$password);
     
     $jwtPayload =
     [
@@ -34,6 +35,6 @@ class AuthTokenController
     ];
     $jwt = $this->jwtCoder->encode($jwtPayload);
     
-    return new JsonResponse(['authToken' => $jwt],202);
+    return new JsonResponse(['auth_token' => $jwt],202);
   }
 }
