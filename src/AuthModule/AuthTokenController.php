@@ -7,23 +7,30 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 class AuthTokenController
 {
   private $jwtCoder;
+  private $userProvider;
+  private $userPasswordEncoder;
   
-  public function __construct($jwtCoder)
+  public function __construct($jwtCoder,$userProvider,$userPasswordEncoder)
   {
     $this->jwtCoder = $jwtCoder;
+    $this->userProvider = $userProvider;
+    $this->userPasswordEncoder = $userPasswordEncoder;
   }
   public function postAction(Request $request)
   {
     $requestPayload = json_decode($request->getContent(),true);
     
     $username = $requestPayload['username'];
-    $roles = ['ROLE_SRA'];
+    
+    $user = $this->userProvider->loadUserByUsername($username);
+    
+    $this->userPasswordEncoder->isPasswordValid($user,$requestPayload['password']);
     
     $jwtPayload =
     [
       'iat'      => time(),
       'username' => $username,
-      'roles'    => $roles,
+      'roles'    => $user['roles'],
     ];
     $jwt = $this->jwtCoder->encode($jwtPayload);
     
