@@ -2,13 +2,15 @@
 
 namespace Cerad\Component\JWT;
 
+use Cerad\Component\JWT\JWTCoder;
+
 require __DIR__  . '/../../vendor/autoload.php';
 
-class JWTTest extends \PHPUnit_Framework_TestCase
+class JWTCoderTest extends \PHPUnit_Framework_TestCase
 {
   public function testEncodeDecode()
   {
-    $jwt = new JWT('my_key');
+    $jwt = new JWTCoder('my_key');
     
     $msg = $jwt->encode('abc');
     
@@ -16,7 +18,7 @@ class JWTTest extends \PHPUnit_Framework_TestCase
   }
   public function testValidToken()
   {
-    $jwt = new JWT('my_key');
+    $jwt = new JWTCoder('my_key');
     $payload = array(
       "message" => "abc",
        "exp" => time() + 20); // time in the future
@@ -26,7 +28,7 @@ class JWTTest extends \PHPUnit_Framework_TestCase
   }
     public function testInvalidToken()
     {
-      $jwt = new JWT('my_key');
+      $jwt = new JWTCoder('my_key');
       $payload = array(
         "message" => "abc",
         "exp" => time() + 20); // time in the future

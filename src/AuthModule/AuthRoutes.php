@@ -1,20 +1,20 @@
 <?php
-namespace Cerad\Module\RefereeModule;
+namespace Cerad\Module\AuthModule;
 
 use Symfony\Component\Routing\RouteCollection;
 use Symfony\Component\Routing\Route;
 
-class RefereeRoutes
+class AuthRoutes
 {
-  public function __construct($container,$prefix = '/api')
+  public function __construct($container,$prefix = '/auth')
   { 
     $service = function($c) use($prefix)
     {
       $routes = new RouteCollection();
       
-      $refereeAction = function($request) use ($c)
+      $authTokenAction = function($request) use ($c)
       {
-        $controller = $c->get('referee_controller');
+        $controller = $c->get('auth_token_controller');
         $id = $request->attributes->get('id');
         switch($request->getMethod())
         {
@@ -30,24 +30,16 @@ class RefereeRoutes
         // Toss exception
       };
       // TODO: Make RestRoute function
-      $routes->add('referee_resource_one',  new Route(
-        '/referees/{id}',['_action' => $refereeAction]
+      $routes->add('auth_resource_token',  new Route(
+        '/tokens/{id}',['_action' => $authTokenAction]
       ));
       // One route, switch in controller
-      $routes->add('referee_resource',  new Route(
-        '/referees',['_action' => $refereeAction]
-      ));
-      // One route, switch in controller
-      $routes->add('referee_resource_sra',  new Route(
-        '/refereesx',
-        [
-          '_action' => $refereeAction,
-          '_roles'  => 'ROLE_SRA'
-        ]
+      $routes->add('auth_resource_tokens',  new Route(
+        '/tokens',['_action' => $authTokenAction]
       ));
       $routes->addPrefix($prefix);
       return $routes;
     };
-    $container->set('referee_routes',$service,'routes');
+    $container->set('auth_routes',$service,'routes');
   }
 }

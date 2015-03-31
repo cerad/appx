@@ -73,4 +73,39 @@ class AppTest extends \PHPUnit_Framework_TestCase
     $this->assertEquals(3, count($items));
   
   }
+  public function testCreateAuthToken()
+  {
+    $content = json_encode(['username' => 'ahundiak','password'=>'zzz']);
+    
+    $request = Request::create('/auth/tokens','POST',[],[],[],[],$content);
+    
+    $response = $this->app->handle($request);
+    $this->assertEquals(202,                $response->getStatusCode());
+    $this->assertEquals('application/json', $response->headers->get('Content-Type'));
+
+    $responsePayload = json_decode($response->getContent(),true);
+    $jwt = $responsePayload['authToken'];
+    
+    return $jwt;
+  }
+  /**
+   * @depends testCreateAuthToken
+   */
+  public function testAuthRequestSuccess($jwt)
+  {
+    $request = Request::create($this->resource . 'x','GET');
+    $request->headers->set('Authorization',$jwt);
+    $response = $this->app->handle($request);
+    $responsePayload = json_decode($response->getContent(),true);
+    $this->assertEquals(3,count($responsePayload));
+  }
+  /**
+   * @depends testCreateAuthToken
+   * @expectedException Symfony\Component\Security\Core\Exception\AccessDeniedException
+   */
+  public function testAuthRequestFailure($jwt)
+  {
+    $request  = Request::create($this->resource . 'x','GET');
+    $response = $this->app->handle($request);
+  }
 }

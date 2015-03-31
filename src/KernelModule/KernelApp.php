@@ -51,6 +51,7 @@ class KernelApp
     $tags   = $container->getTags('routes');
     foreach($tags as $tag)
     {
+    //echo sprintf("\nRoutes: %s\n",$tag['service_id']);
       $routes->addCollection($container->get($tag['service_id']));
     }
   }

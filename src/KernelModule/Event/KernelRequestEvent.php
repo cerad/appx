@@ -14,9 +14,9 @@ class KernelRequestEvent extends Event
   private $request;
   private $response;
   
-  public function __construct($request,$type)
+  public function __construct($request,$type = KernelApp::REQUEST_TYPE_MASTER)
   {
-    $this->type = $type;
+    $this->type    = $type;
     $this->request = $request;
   }
   public function isMasterRequest() { return $this->type == KernelApp::REQUEST_TYPE_MASTER; }

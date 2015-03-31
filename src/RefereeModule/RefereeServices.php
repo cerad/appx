@@ -14,11 +14,5 @@ class RefereeServices
     {
       return new \Cerad\Module\RefereeModule\RefereeController($c->get('referee_repository'));
     });
-    $routes = function($c)
-    {
-      
-    };
-    $container->set('referee_routes',$routes,'routes');
-    
   }
 }
