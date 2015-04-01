@@ -15,9 +15,17 @@ class AuthUserProviderInMemory
   {
     if (isset($this->users[$username]))
     {
-      $user = $this->users[$username];
-      $user['username'] = $username;
-      return $user;
+      $user = 
+      [
+        'username'    => $username,
+        'roles'       => null,
+        'email'       => null,
+        'password'    => null,
+        'salt'        => null,
+        'person_name' => null,
+        'person_guid' => null,
+      ];
+      return array_merge($user,$this->users[$username]);
     }
     $ex = new UsernameNotFoundException(sprintf('Username "%s" does not exist.', $username));
     $ex->setUsername($username);

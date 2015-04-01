@@ -19,10 +19,14 @@ class CORSListener implements EventSubscriberInterface
     ];
   }
   protected $maxAge = 86400; //3600 * 24;
+  
   protected $allowOrigin = null;
   
   protected function addCorsHeaders($response)
   {
+    // No origin means no cors
+    if (!$this->allowOrigin) return;
+    
     $response->headers->set('Access-Control-Allow-Headers','Content-Type, Authorization');
     $response->headers->set('Access-Control-Allow-Methods','GET, POST, PUT, DELETE, PATCH, OPTIONS');
     $response->headers->set('Access-Control-Allow-Origin', $this->allowOrigin); // Maybe pull from request    
@@ -31,13 +35,13 @@ class CORSListener implements EventSubscriberInterface
   {
     if (!$event->isMasterRequest()) return;
     
-    // Only interested in preflights
-    if ($event->getRequest()->getMethod() !== 'OPTIONS') return;
-    
     // CORS Must have Origin header
     $request = $event->getRequest();
     $this->allowOrigin = $request->headers->get('Origin');
     if (!$this->allowOrigin) return;
+    
+    // Only interested in preflights
+    if ($request->getMethod() !== 'OPTIONS') return;
 
     // It's a prefilght
     $response = new Response();

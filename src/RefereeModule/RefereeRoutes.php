@@ -6,7 +6,7 @@ use Symfony\Component\Routing\Route;
 
 class RefereeRoutes
 {
-  public function __construct($container,$prefix = '/api')
+  public function __construct($container,$prefix = null)
   { 
     $service = function($c) use($prefix)
     {

@@ -24,14 +24,17 @@ class AuthTokenController
     $password = $requestPayload['password'];
     
     $user = $this->userProvider->loadUserByUsername($username);
+    $salt = isset($user['salt']) ? $user['salt'] : null;
     
-    $this->userPasswordEncoder->isPasswordValid($user['password'],$password);
+    $this->userPasswordEncoder->isPasswordValid($user['password'],$password,$salt);
     
     $jwtPayload =
     [
-      'iat'      => time(),
-      'username' => $username,
-      'roles'    => $user['roles'],
+      'iat'         => time(),
+      'username'    => $username,
+      'roles'       => $user['roles'],
+      'person_name' => $user['person_name'],
+      'person_guid' => $user['person_guid'],
     ];
     $jwt = $this->jwtCoder->encode($jwtPayload);
     

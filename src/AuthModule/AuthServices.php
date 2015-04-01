@@ -55,8 +55,8 @@ class AuthServices
       return new \Cerad\Module\AuthModule\AuthTokenController
       (
         $c->get('jwt_coder'),
-        $c->get('auth_user_provider_in_memory'),
-        $c->get('auth_user_password_encoder_plain_text')
+        $c->get('auth_user_provider_dao'),
+        $c->get('auth_user_password_encoder_dao')
       );
     });
     $container->set('database_connection_users',function($c)

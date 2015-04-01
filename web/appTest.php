@@ -9,7 +9,7 @@ use Symfony\Component\HttpFoundation\Request;
 class AppTest extends \PHPUnit_Framework_TestCase
 {
   private $app;
-  private $resource = '/api/referees';
+  private $resource = '/referees';
   
   public function setUp()
   {
@@ -75,7 +75,7 @@ class AppTest extends \PHPUnit_Framework_TestCase
   }
   public function testCreateAuthToken()
   {
-    $content = json_encode(['username' => 'ahundiak','password'=>'zzz']);
+    $content = json_encode(['username' => 'ahundiak@gmail.com','password'=>'zzz']);
     
     $request = Request::create('/auth/tokens','POST',[],[],[],[],$content);
     
