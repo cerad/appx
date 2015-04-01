@@ -1,13 +1,12 @@
 <?php
 
-namespace Cerad\Module\AuthModule;
+namespace Cerad\Module\AuthModule\Tests;
 
-use Cerad\Module\KernelModule\KernelContainer;
+require __DIR__  . '/../../../vendor/autoload.php';
+  
 use Cerad\Module\KernelModule\Event\KernelRequestEvent;
 
-use Cerad\Module\AuthModule\AuthServices;
 use Cerad\Module\AuthModule\AuthToken;
-use Cerad\Module\AuthModule\AuthTokenController;
 use Cerad\Module\AuthModule\AuthTokenListener;
 use Cerad\Module\AuthModule\AuthRoleHierarchy;
 
@@ -15,39 +14,13 @@ use Cerad\Component\JWT\JWTCoder;
 
 use Symfony\Component\HttpFoundation\Request;
 
-class AuthTokenTest extends \PHPUnit_Framework_TestCase
+class AuthTokenTest extends AuthTests
 {
-  public static function setUpBeforeClass()
-  {
-    require __DIR__  . '/../../vendor/autoload.php';
-  }
-  private $container;
-  public function setUp()
-  {
-    // Probably a bad idea
-    $this->container = new KernelContainer();
-    new AuthServices($this->container);
-    $this->container->set('secret','secret');
-  }
   public function testNewToken()
   {
     $token = new AuthToken('ahundiak',['ROLE_USER','ROLE_SRA']);
     
     $this->assertEquals(2, count($token->getRoles()));
-  }
-  public function testUserProviderSuccess()
-  {
-    $userProvider = $this->container->get('auth_user_provider');
-    $user = $userProvider->loadUserByUsername('sra');
-    $this->assertEquals('sra',$user['username']);
-  }
-  /**
-   * @expectedException Symfony\Component\Security\Core\Exception\UsernameNotFoundException
-   */
-  public function testUserProviderFailure()
-  {
-    $userProvider = $this->container->get('auth_user_provider');
-    $user = $userProvider->loadUserByUsername('srax');
   }
   public function testPostToken()
   {

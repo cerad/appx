@@ -3,7 +3,7 @@ namespace Cerad\Module\AuthModule;
 
 use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
 
-class AuthUserProvider
+class AuthUserProviderInMemory
 {
   private $users;
   

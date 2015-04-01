@@ -1,7 +1,7 @@
 /composer.lock
-/vendor/
 /nbproject/private/
 /src/AppModule/AppParameters.php
 /phpunit.xml
 /var/
 /vendor/
+/src/AuthModule/AuthParameters.php

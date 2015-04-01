@@ -25,7 +25,7 @@ class AuthTokenController
     
     $user = $this->userProvider->loadUserByUsername($username);
     
-    $this->userPasswordEncoder->isPasswordValid($user,$password);
+    $this->userPasswordEncoder->isPasswordValid($user['password'],$password);
     
     $jwtPayload =
     [

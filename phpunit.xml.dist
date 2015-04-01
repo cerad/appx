@@ -11,9 +11,18 @@
          syntaxCheck="false"
 >
     <testsuites>
-        <testsuite name="PHP JSON Web Token Test Suite">
+        <testsuite name="Auth">
+            <file>./src/AuthModule/Tests/AuthUserTest.php</file>
+            <file>./src/AuthModule/Tests/AuthTokenTest.php</file>
+        </testsuite>
+        <testsuite name="JWT">
             <file>./src/JWT/JWTTest.php</file>
+        </testsuite>
+        <testsuite name="Web">
             <file>./web/appTest.php</file>
+        </testsuite>
+        <testsuite name="Kernel">
+            <file>./src/KernelModule/KernelContainerTest.php</file>
         </testsuite>
     </testsuites>
 </phpunit>
