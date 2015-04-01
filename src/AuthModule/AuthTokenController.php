@@ -32,12 +32,13 @@ class AuthTokenController
     [
       'iat'         => time(),
       'username'    => $username,
-      'roles'       => $user['roles'],
+      'roles'       => array_values($user['roles']), // Otherwise get an object?
       'person_name' => $user['person_name'],
       'person_guid' => $user['person_guid'],
     ];
     $jwt = $this->jwtCoder->encode($jwtPayload);
     
-    return new JsonResponse(['auth_token' => $jwt],202);
+    $jwtPayload['auth_token'] = $jwt;
+    return new JsonResponse($jwtPayload,202);
   }
 }
