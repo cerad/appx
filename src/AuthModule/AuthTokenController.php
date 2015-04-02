@@ -28,11 +28,14 @@ class AuthTokenController
     
     $this->userPasswordEncoder->isPasswordValid($user['password'],$password,$salt);
     
+    // Need array_values because index can get messed up
+    $roles = is_array($user['roles']) ? array_values($user['roles']) : [$user['roles']];
+
     $jwtPayload =
     [
       'iat'         => time(),
       'username'    => $username,
-      'roles'       => array_values($user['roles']), // Otherwise get an object?
+      'roles'       => $roles,
       'person_name' => $user['person_name'],
       'person_guid' => $user['person_guid'],
     ];

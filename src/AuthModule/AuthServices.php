@@ -9,10 +9,10 @@ class AuthServices
     // Users
     $users = 
     [
-      'ahundiak' => ['password' => 'zzz',      'roles' => 'ROLE_ADMIN'],
-      'sra'      => ['password' => 'sra',      'roles' => 'ROLE_SRA'],
-      'assignor' => ['password' => 'assignor', 'roles' => 'ROLE_ASSIGNOR'],
-      'user'     => ['password' => 'user',     'roles' => 'ROLE_USER'],
+      'ahundiak' => ['password' => 'zzz',      'roles' => 'ROLE_ADMIN',    'person_name' => 'Art Hundiak'],
+      'sra'      => ['password' => 'sra',      'roles' => 'ROLE_SRA',      'person_name' => 'Pat Miller'],
+      'assignor' => ['password' => 'assignor', 'roles' => 'ROLE_ASSIGNOR', 'person_name' => 'Andy Dye'],
+      'user'     => ['password' => 'user',     'roles' => 'ROLE_USER',     'person_name' => 'Bill Steely'],
     ];
     $container->set('auth_users_data',$users);
     $container->set('auth_user_provider_in_memory',function($c)
