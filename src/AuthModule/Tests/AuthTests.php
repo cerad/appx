@@ -8,7 +8,7 @@ use Cerad\Module\KernelModule\KernelContainer;
 
 use Cerad\Module\AuthModule\AuthServices;
 
-class AuthTests extends \PHPUnit_Framework_TestCase
+class AuthTests extends  \PHPUnit_Framework_TestCase
 {  
   protected $container;
   
