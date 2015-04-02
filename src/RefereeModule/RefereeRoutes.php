@@ -29,15 +29,21 @@ class RefereeRoutes
         }
         // Toss exception
       };
-      // TODO: Make RestRoute function
       $routes->add('referee_resource_one',  new Route(
-        '/referees/{id}',['_action' => $refereeAction]
+        '/referees/{id}',
+        [
+          '_action' => $refereeAction,
+          '_roles'  => 'ROLE_ASSIGNOR'
+        ]
       ));
-      // One route, switch in controller
       $routes->add('referee_resource',  new Route(
-        '/referees',['_action' => $refereeAction]
+        '/referees',
+        [
+          '_action' => $refereeAction,
+          '_roles'  => 'ROLE_ASSIGNOR'
+        ]
       ));
-      // One route, switch in controller
+      // Just for testing
       $routes->add('referee_resource_sra',  new Route(
         '/refereesx',
         [

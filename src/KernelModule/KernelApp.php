@@ -3,7 +3,7 @@
 namespace Cerad\Module\KernelModule;
 
 use Symfony\Component\HttpFoundation\Request;
-//  Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 use Cerad\Module\KernelModule\KernelContainer;
 use Cerad\Module\KernelModule\Event\KernelRequestEvent;
@@ -68,7 +68,32 @@ class KernelApp
     }
   }
   // TODO add exception wrapper
-  public function handle(Request $request, $requestType = self::REQUEST_TYPE_MASTER, $catch = true)
+  public function handle(Request $request, $requestType = self::REQUEST_TYPE_MASTER)
+  {
+    try
+    {
+      return $this->handleRaw($request,$requestType);
+    } 
+    catch (\Exception $ex) // TODO: Implement Exception listener
+    {
+      $class = get_class($ex);
+      $message = $ex->getMessage();
+      switch($class)
+      {
+        case 'Symfony\Component\Security\Core\Exception\AccessDeniedException':
+          $code = 401;
+          break;
+        default:
+          $code = 401;
+      }
+      $response = new JsonResponse(['error' => $message],$code);
+      
+      // Need this so auth headers get set
+      $dispatcher = $this->container->get('event_dispatcher');
+      return $this->dispatchResponse($dispatcher,$request,$response);
+    }
+  }
+  public function handleRaw(Request $request, $requestType)
   {
     // Boot on first request
     if (!$this->booted) $this->boot();

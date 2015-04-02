@@ -32,7 +32,7 @@ class AppTest extends \PHPUnit_Framework_TestCase
   {
     $id = 42;
     
-    $request  = Request::create($this->resource . '/' . $id,'GET');
+    $request  = Request::create($this->resource . '/' . $id . '?role=role_admin','GET');
 
     $response = $this->app->handle($request);
     
@@ -45,9 +45,9 @@ class AppTest extends \PHPUnit_Framework_TestCase
   {
     $ussfId = '2014100800555735';
     
-    $url1 = $this->resource . '/' . $ussfId;
+    $url = $this->resource . '/' . $ussfId  . '?role=role_admin';
     
-    $request  = Request::create($url1,'GET');
+    $request  = Request::create($url,'GET');
 
     $response = $this->app->handle($request);
     
@@ -58,13 +58,13 @@ class AppTest extends \PHPUnit_Framework_TestCase
     $container = $this->app->getContainer();
     $routeGenerator = $container->get('route_generator');
     
-    $url2 = $routeGenerator->generate('referee_resource_one', ['id' => $ussfId]);
-    $this->assertEquals($url1,$url2);
+    $url2 = $routeGenerator->generate('referee_resource_one', ['id' => $ussfId,'role'=>'role_admin']);
+    $this->assertEquals($url,$url2);
      
   }
   public function testAll()
   {
-    $request  = Request::create($this->resource,'GET');
+    $request  = Request::create($this->resource . '?role=role_admin','GET');
 
     $response = $this->app->handle($request);
     
@@ -101,11 +101,30 @@ class AppTest extends \PHPUnit_Framework_TestCase
   }
   /**
    * @depends testCreateAuthToken
-   * @expectedException Symfony\Component\Security\Core\Exception\AccessDeniedException
+   *  expectedException Symfony\Component\Security\Core\Exception\AccessDeniedException
    */
   public function testAuthRequestFailure($jwt)
   {
     $request  = Request::create($this->resource . 'x','GET');
     $response = $this->app->handle($request);
+    $this->assertEquals(401,$response->getStatusCode());
+  }
+  public function testAuthRequestRole()
+  {
+    $uri = $this->resource . 'x' . '?role=role_sra';
+    
+    $request  = Request::create($uri,'GET');
+    $response = $this->app->handle($request);
+    
+    $this->assertEquals(200,$response->getStatusCode());
+  }
+  public function testAuthRequestRoleFail()
+  {
+    $uri = $this->resource . 'x' . '?role=role_user';
+    
+    $request  = Request::create($uri,'GET');
+    $response = $this->app->handle($request);
+    
+    $this->assertEquals(401,$response->getStatusCode());
   }
 }
