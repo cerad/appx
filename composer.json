@@ -14,7 +14,8 @@
         "symfony/yaml": "~2.6",
         "doctrine/dbal": "~2.5",
         "symfony/event-dispatcher": "~2.6",
-        "symfony/security": "~2.6"
+        "symfony/security": "~2.6",
+        "psr/http-message": "0.9.*"
     },
     "target-dir": ""
 }
