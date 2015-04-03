@@ -104,7 +104,7 @@ class Message implements MessageInterface
     
     return 
       isset($this->headerKeys[$nameLower]) ?
-      implode(',',$this->headers[$this->headerKeys[$nameLower]]) :
+      implode(', ',$this->headers[$this->headerKeys[$nameLower]]) :
       null;
   }
   public function getHeaderLines($name)
