@@ -8,7 +8,7 @@ use Cerad\Component\HttpMessage\TextStream;
 
 require __DIR__  . '/../../vendor/autoload.php';
 
-class RequestTestTest extends \PHPUnit_Framework_TestCase
+class RequestTest extends \PHPUnit_Framework_TestCase
 {
   public function testStatusCode()
   {
@@ -29,10 +29,10 @@ class RequestTestTest extends \PHPUnit_Framework_TestCase
   {
     $message1 = new Message();
     
-    $message2 = $message1->withProtocolVersion('1.0');
+    $message2 = $message1->withProtocolVersion('1.1');
     
-    $this->assertEquals('1.1',$message1->getProtocolVersion());
-    $this->assertEquals('1.0',$message2->getProtocolVersion());
+    $this->assertEquals('1.0',$message1->getProtocolVersion());
+    $this->assertEquals('1.1',$message2->getProtocolVersion());
   }
   public function testMessageHeaders()
   {

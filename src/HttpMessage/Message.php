@@ -8,13 +8,18 @@ use Cerad\Component\HttpMessage\TextStream;
 
 class Message implements MessageInterface
 {
-  protected $protocolVersion = '1.1';
+  protected $protocolVersion = '1.0'; // Match Symfony
   
   protected $headers    = []; // Original keys, value is always an array
   protected $headerKeys = []; // lowercase => original
   
   protected $body;
   
+  /* ======================================================
+   * The construct is the only non-standard method
+   * Keep for now for testing purposes
+   * Might want to make a MessageBase later
+   */
   public function __construct($content = '',$headers = [])
   {
     $body = ($content instanceof StreamableInterface) ? $content : new TextStream($content);

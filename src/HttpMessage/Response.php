@@ -1,16 +1,13 @@
 <?php
 namespace Cerad\Component\HttpMessage;
 
-use Psr\Http\Message\ResponseInterface;
-
-use Cerad\Component\HttpMessage\Message;
+use Cerad\Component\HttpMessage\ResponseBase;
 
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse; // For status code stuff
 
-class Response extends Message implements ResponseInterface
+class Response extends ResponseBase
 {
-  protected $statusCode;
-  protected $statusCodeReasonPhrase;
+  protected $charset = 'UTF-8';
   
   public function __construct($content = '', $statusCode = 200, $headers = [])
   {
@@ -24,25 +21,14 @@ class Response extends Message implements ResponseInterface
     $this->setStatusCode  ($statusCode);
     $this->setReasonPhrase($reasonPhrase);
   }
-  public function withStatus($statusCode,$reasonPhrase = null)
-  {
-    if ($reasonPhrase === null)
-    {
-      $reasonPhrase = 
-        isset(SymfonyResponse::$statusTexts[$statusCode]) ?
-              SymfonyResponse::$statusTexts[$statusCode] :
-              null;
-    }
-    $response = clone $this;
-    
-    $response->setStatusCode  ($statusCode);
-    $response->setReasonPhrase($reasonPhrase);
-    
-    return $response;
-  }
-  public function getStatusCode()   { return $this->statusCode;   }
-  public function getReasonPhrase() { return $this->statusCodeReasonPhrase; }
+  // $headers->set('Content-Type', 'text/html; charset='.$charset);
   
-  protected function setStatusCode  ($code)         { $this->statusCode             = $code;         }
-  protected function setReasonPhrase($reasonPhrase) { $this->statusCodeReasonPhrase = $reasonPhrase; }
+  /* =====================================================
+   * Dump response to the client
+   */
+  public function send()
+  {
+    $this->sendHeaders();
+    $this->sendContent();
+  }
 }
