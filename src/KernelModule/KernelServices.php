@@ -19,6 +19,11 @@ class KernelServices
     {
       return new \Symfony\Component\HttpFoundation\RequestStack();
     });
+    /* =============================================
+     * $this->context->getHost()
+     * $this->context->getMethod()
+     * $this->context->getScheme()
+     */
     $container->set('request_context',function($c)
     {
       $context = new \Symfony\Component\Routing\RequestContext();
