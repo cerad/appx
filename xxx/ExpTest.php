@@ -69,6 +69,48 @@ class AppTest extends \PHPUnit_Framework_TestCase
     
     preg_match('#([/\w-]+|:\w+)+#',$subject,$matches); //print_r($matches);
     
-    preg_match('#((:\w+)+)#',$subject,$matches); print_r($matches);
+    preg_match('#((:\w+)+)#',$subject,$matches); // print_r($matches);
+  }
+  public function test3()
+  {
+    $pattern = '#^/referees/?$|^/referees/(\d+$)#';
+    $matches = [];
+    
+    preg_match($pattern,'/referees',$matches);
+    $this->assertEquals(1,count($matches));
+    
+    preg_match($pattern,'/referees/',$matches);
+    $this->assertEquals(1,count($matches));
+    
+    preg_match($pattern,'/referees/42',$matches);
+    $this->assertEquals( 2,count($matches));
+    $this->assertEquals(42,$matches[1]);
+    
+    preg_match($pattern,'/referees/x',$matches);
+    $this->assertEquals(0,count($matches));
+    
+    preg_match($pattern,'/referees//',$matches);
+    $this->assertEquals(0,count($matches));
+  }
+  public function test4()
+  {
+    $pattern = '#^/referees/?$|(\d+$)#';
+    $matches = [];
+    
+    preg_match($pattern,'/referees',$matches);
+    $this->assertEquals(1,count($matches));
+    
+    preg_match($pattern,'/referees/',$matches);
+    $this->assertEquals(1,count($matches));
+    
+    preg_match($pattern,'/referees/42',$matches);
+    $this->assertEquals( 2,count($matches));
+    $this->assertEquals(42,$matches[1]);
+    
+    preg_match($pattern,'/referees/x',$matches);
+    $this->assertEquals(0,count($matches));
+    
+    preg_match($pattern,'/referees//',$matches);
+    $this->assertEquals(0,count($matches));
   }
 }
