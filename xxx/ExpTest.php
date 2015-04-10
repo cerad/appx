@@ -73,7 +73,7 @@ class AppTest extends \PHPUnit_Framework_TestCase
   }
   public function test3()
   {
-    $pattern = '#^/referees/?$|^/referees/(\d+$)#';
+    $pattern = '#^/referees/?$|^/referees/(\d+$)|^/referees/(?P<me>me$)|^/referees/(?P<you>you$)#';
     $matches = [];
     
     preg_match($pattern,'/referees',$matches);
@@ -86,31 +86,49 @@ class AppTest extends \PHPUnit_Framework_TestCase
     $this->assertEquals( 2,count($matches));
     $this->assertEquals(42,$matches[1]);
     
+    preg_match($pattern,'/referees/me', $matches); //print_r($matches);
+    preg_match($pattern,'/referees/you',$matches); //print_r($matches);
+    
     preg_match($pattern,'/referees/x',$matches);
     $this->assertEquals(0,count($matches));
     
     preg_match($pattern,'/referees//',$matches);
+    $this->assertEquals(0,count($matches));
+    
+    preg_match($pattern,'/42',$matches);
     $this->assertEquals(0,count($matches));
   }
   public function test4()
   {
-    $pattern = '#^/referees/?$|(\d+$)#';
+    $pattern = '#^/referees(/?$)|/(\d+$)|(me$)#';
     $matches = [];
     
-    preg_match($pattern,'/referees',$matches);
-    $this->assertEquals(1,count($matches));
+    preg_match($pattern,'/referees',$matches); // print_r($matches); // [0=>'/referees',1=>null]
+    $this->assertEquals(2,count($matches));
     
-    preg_match($pattern,'/referees/',$matches);
-    $this->assertEquals(1,count($matches));
+    preg_match($pattern,'/referees/',$matches); // print_r($matches); // [0=>'/referees/',1=>'/']
+    $this->assertEquals(2,count($matches));
     
-    preg_match($pattern,'/referees/42',$matches);
-    $this->assertEquals( 2,count($matches));
-    $this->assertEquals(42,$matches[1]);
+    preg_match($pattern,'/referees/42',$matches); // print_r($matches);// [0=>'/42',1=>null,2=>42]
+    $this->assertEquals( 3,count($matches));
+    $this->assertEquals(42,$matches[2]);
     
-    preg_match($pattern,'/referees/x',$matches);
+    preg_match($pattern,'/42',$matches); print_r($matches);// [0=>'/42',1=>null,2=>42]
+    
+    preg_match($pattern,'/referees/me',$matches);  //print_r($matches); // [0=>'me]
+    $this->assertEquals( 4,count($matches));
+    $this->assertEquals('me',$matches[3]);
+    
+    preg_match($pattern,'/referees/x',$matches); // []
     $this->assertEquals(0,count($matches));
     
-    preg_match($pattern,'/referees//',$matches);
+    preg_match($pattern,'/referees//',$matches); // []
+    $this->assertEquals(0,count($matches));
+    
+    preg_match($pattern,'/referees442',$matches); // []
+    $this->assertEquals(0,count($matches));
+    
+    preg_match($pattern,'/referees/4a',$matches); // []
     $this->assertEquals(0,count($matches));
   }
 }
