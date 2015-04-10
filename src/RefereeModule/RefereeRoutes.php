@@ -1,59 +1,51 @@
 <?php
 namespace Cerad\Module\RefereeModule;
 
-use Symfony\Component\Routing\RouteCollection;
-use Symfony\Component\Routing\Route;
-
 class RefereeRoutes
 {
-  public function __construct($container,$prefix = null)
+  public function __construct($container)
   { 
-    $service = function($c) use($prefix)
+    $refereeAction = function($request) use ($container)
     {
-      $routes = new RouteCollection();
-      
-      $refereeAction = function($request) use ($c)
+      $controller = $container->get('referee_controller');
+      $id = $request->attributes->get('id');
+      switch($request->getMethod())
       {
-        $controller = $c->get('referee_controller');
-        $id = $request->attributes->get('id');
-        switch($request->getMethod())
-        {
-          case 'GET':
-            return $id !== null
-              ? $controller->getOneAction($request,$request->attributes->get('id'))
-              : $controller->searchAction($request);
+        case 'GET':
+          return $id !== null
+            ? $controller->getOneAction($request,$request->attributes->get('id'))
+            : $controller->searchAction($request);
           
-          case 'POST':   return $controller->postAction  ($request);
-          case 'PUT':    return $controller->putAction   ($request,$id);
-          case 'DELETE': return $controller->deleteAction($request,$id);
-        }
-        // Toss exception
-      };
-      $routes->add('referee_resource_one',  new Route(
-        '/referees/{id}',
-        [
-          '_action' => $refereeAction,
-          '_roles'  => 'ROLE_ASSIGNOR'
-        ]
-      ));
-      $routes->add('referee_resource',  new Route(
-        '/referees',
-        [
-          '_action' => $refereeAction,
-          '_roles'  => 'ROLE_ASSIGNOR'
-        ]
-      ));
-      // Just for testing
-      $routes->add('referee_resource_sra',  new Route(
-        '/refereesx',
-        [
-          '_action' => $refereeAction,
-          '_roles'  => 'ROLE_SRA'
-        ]
-      ));
-      $routes->addPrefix($prefix);
-      return $routes;
+        case 'POST':   return $controller->postAction  ($request);
+        case 'PUT':    return $controller->putAction   ($request,$id);
+        case 'DELETE': return $controller->deleteAction($request,$id);
+      }
     };
-    $container->set('referee_routes',$service,'routes');
+    $routeReferees = function($path, $context = null) use($refereeAction)
+    {  
+      $params = [
+        'id'      => null,
+        '_action' =>  $refereeAction,
+        '_roles'  => ['ROLE_ASSIGNOR']
+      ];
+      if ($path === '/referees') 
+      {
+      //if (!in_array($context['method'],['GET','POST'])) return false;
+
+        return $params;
+      }
+      $matches = [];
+        
+      if (!preg_match('#^/referees/(\d+$)#', $path, $matches)) return false;
+
+      $params['id'] = $matches[1]; // No typecast, ussf id's are 16 digits long
+        
+      return $params;
+    };
+    $routeRefereesService = function() use ($routeReferees)
+    {
+      return $routeReferees;
+    };
+    $container->set('route_referees',$routeRefereesService,'routes');
   }
 }

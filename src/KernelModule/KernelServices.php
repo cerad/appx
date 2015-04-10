@@ -17,7 +17,7 @@ class KernelServices
     // Request/Routes
     $container->set('request_stack',function($c)
     {
-      return new \Symfony\Component\HttpFoundation\RequestStack();
+      return new \Cerad\Component\HttpMessage\RequestStack();
     });
     /* =============================================
      * $this->context->getHost()
@@ -26,14 +26,24 @@ class KernelServices
      */
     $container->set('request_context',function($c)
     {
-      $context = new \Symfony\Component\Routing\RequestContext();
-      $context->fromRequest($c->get('request_stack')->getMasterRequest());
+      $request = $c->get('request_stack')->getMasterRequest();
+      $context = [];
+      $context['method'] = $request->getMethod();      
       return $context;
     });
     $container->set('route_matcher',function($c)
     {
-      return new \Symfony\Component\Routing\Matcher\UrlMatcher(
-        $c->get('routes'), 
+      $routes = [];
+      $tags = $c->getTags('routes');
+      foreach($tags as $tag)
+      {
+        $serviceId = $tag['service_id'];
+        $service   = $c->get($serviceId);
+        $routes[$serviceId] = $service;
+      }
+      return new \Cerad\Component\HttpRouting\UrlMatcher
+      (
+        $routes,
         $c->get('request_context')
       );
     });
@@ -59,12 +69,19 @@ class KernelServices
     });
     $container->set('event_dispatcher',function($c)
     {
-      return new \Symfony\Component\EventDispatcher\EventDispatcher();
+      $dispatcher = new \Symfony\Component\EventDispatcher\EventDispatcher();
+      $tags       = $c->getTags('event_listener');
+      foreach($tags as $tag)
+      {
+        $listener = $c->get($tag['service_id']);
+        $dispatcher->addSubscriber($listener);
+      }
+      return $dispatcher;
     });
     $container->set('kernel_cors_listener',function()
     {
       return new \Cerad\Module\KernelModule\EventListener\CORSListener();
-    },'kernel_event_listener');
+    },'event_listener');
   }
 
 }

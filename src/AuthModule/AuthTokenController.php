@@ -1,7 +1,8 @@
 <?php
 namespace Cerad\Module\AuthModule;
 
-use Symfony\Component\HttpFoundation\Request;
+use Cerad\Component\HttpMessage\Request;
+
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 class AuthTokenController
@@ -12,13 +13,13 @@ class AuthTokenController
   
   public function __construct($jwtCoder,$userProvider,$userPasswordEncoder)
   {
-    $this->jwtCoder = $jwtCoder;
-    $this->userProvider = $userProvider;
+    $this->jwtCoder            = $jwtCoder;
+    $this->userProvider        = $userProvider;
     $this->userPasswordEncoder = $userPasswordEncoder;
   }
   public function postAction(Request $request)
   {
-    $requestPayload = json_decode($request->getContent(),true);
+    $requestPayload = $request->getContent();
     
     $username = $requestPayload['username'];
     $password = $requestPayload['password'];
@@ -42,6 +43,7 @@ class AuthTokenController
     $jwt = $this->jwtCoder->encode($jwtPayload);
     
     $jwtPayload['auth_token'] = $jwt;
-    return new JsonResponse($jwtPayload,202);
+    
+    return new JsonResponse($jwtPayload,201);
   }
 }

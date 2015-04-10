@@ -36,7 +36,7 @@ class RefereeController
     $item = $this->refereeRepository->findOne($id);
     
     if ($item) return new JsonResponse($item);
-    
+
     // Error problem
     return new JsonResponse(['error' => 'Item not found'],404);
   }

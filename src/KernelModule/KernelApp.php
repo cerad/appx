@@ -2,7 +2,7 @@
 
 namespace Cerad\Module\KernelModule;
 
-use Symfony\Component\HttpFoundation\Request;
+use Cerad\Component\HttpMessage\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 use Cerad\Module\KernelModule\KernelContainer;
@@ -27,7 +27,7 @@ class KernelApp
   public function getContainer() { return $this->container; }
   
   // Make this public for testing
-  private function boot()
+  public function boot()
   {
     if ($this->booted) return;
     
@@ -45,6 +45,8 @@ class KernelApp
   }
   protected function registerRoutes()
   {
+    return;
+    
     $container = $this->container;
     
     $routes = $container->get    ('routes');
@@ -57,12 +59,15 @@ class KernelApp
   }
   protected function registerEventListeners()
   {
+    return;
+    
     $container = $this->container;
     
     $dispatcher = $container->get    ('event_dispatcher');
     $tags       = $container->getTags('kernel_event_listener');
     foreach($tags as $tag)
     {
+      echo sprintf("Tag %s\n",$tag['service_id']);
       $listener = $container->get($tag['service_id']);
       $dispatcher->addSubscriber($listener);
     }
@@ -97,15 +102,19 @@ class KernelApp
   {
     // Boot on first request
     if (!$this->booted) $this->boot();
-    
+ 
     // Add request
     $requestStack = $this->container->get('request_stack');
     $requestStack->push($request);
-    
+
     // Match the route
     $matcher = $this->container->get('route_matcher');
-    $match   = $matcher->matchRequest($request);
-    $request->attributes->add($match);
+    $match   = $matcher->match($request->getRoutePath());
+    if (!$match) die ('no match');
+    
+    $request->attributes->set($match);
+    
+    $attrs = $request->attributes->get();
     
     // Dispatcher
     $dispatcher = $this->container->get('event_dispatcher');

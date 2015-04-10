@@ -9,6 +9,8 @@ class AuthServices
     // Users
     $users = 
     [
+      'ahundiak@gmail.com' 
+        => ['password' => 'zzz','roles' => 'ROLE_ADMIN','person_name' => 'Art gmail Hundiak'],
       'ahundiak' => ['password' => 'zzz',      'roles' => 'ROLE_ADMIN',    'person_name' => 'Art Hundiak'],
       'sra'      => ['password' => 'sra',      'roles' => 'ROLE_SRA',      'person_name' => 'Pat Miller'],
       'assignor' => ['password' => 'assignor', 'roles' => 'ROLE_ASSIGNOR', 'person_name' => 'Andy Dye'],
@@ -48,7 +50,7 @@ class AuthServices
         $c->get('auth_role_hierarchy'),
         $c->get('jwt_coder')
       );
-    },'kernel_event_listener');
+    },'event_listener');
     
     $container->set('auth_token_controller',function($c)
     {

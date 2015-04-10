@@ -77,7 +77,9 @@ class AuthTokenListener implements EventSubscriberInterface
   {
     if (!$event->isMasterRequest()) return;
     
-    $role = $event->getRequest()->query->get('role');
+    $params = $event->getRequest()->getQueryParams();
+    
+    $role = isset($params['role']) ? $params['role'] : null;
     
     if (!$role) return;
       
