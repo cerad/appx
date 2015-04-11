@@ -3,7 +3,7 @@ namespace Cerad\Module\AuthModule;
 
 use Cerad\Component\HttpMessage\Request;
 
-use Symfony\Component\HttpFoundation\JsonResponse;
+use Cerad\Component\HttpMessage\ResponseJson;
 
 class AuthTokenController
 {
@@ -44,6 +44,6 @@ class AuthTokenController
     
     $jwtPayload['auth_token'] = $jwt;
     
-    return new JsonResponse($jwtPayload,201);
+    return new ResponseJson($jwtPayload,201);
   }
 }

@@ -3,7 +3,7 @@ namespace Cerad\Module\KernelModule\EventListener;
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
-use Symfony\Component\HttpFoundation\Response;
+use Cerad\Component\HttpMessage\Response;
 
 use Cerad\Module\KernelModule\Event\KernelRequestEvent;
 use Cerad\Module\KernelModule\Event\KernelResponseEvent;
@@ -44,10 +44,10 @@ class CORSListener implements EventSubscriberInterface
     if ($request->getMethod() !== 'OPTIONS') return;
 
     // It's a prefilght
-    $response = new Response();
+    $response = $event->getResponse() ? $event->getResponse() : new Response();
     $this->addCorsHeaders($response);
     
-    if ($this->maxAge) $response->setMaxAge($this->maxAge);
+  //if ($this->maxAge) $response->setMaxAge($this->maxAge);
     
     $event->setResponse($response);
     $event->stopPropagation();

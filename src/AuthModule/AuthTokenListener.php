@@ -9,7 +9,7 @@ use Cerad\Module\KernelModule\Event\KernelRequestEvent;
 
 use Cerad\Module\AuthModule\AuthToken;
 
-//  Symfony\Component\HttpFoundation\Request;
+//  Cerad\Component\HttpMessage\Request;
 
 class AuthTokenListener implements EventSubscriberInterface
 {

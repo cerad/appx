@@ -3,7 +3,7 @@
 namespace Cerad\Module\KernelModule;
 
 use Cerad\Component\HttpMessage\Request;
-use Symfony\Component\HttpFoundation\JsonResponse;
+use Cerad\Component\HttpMessage\ResponseJson;
 
 use Cerad\Module\KernelModule\KernelContainer;
 use Cerad\Module\KernelModule\Event\KernelRequestEvent;
@@ -91,7 +91,7 @@ class KernelApp
         default:
           $code = 401;
       }
-      $response = new JsonResponse(['error' => $message],$code);
+      $response = new ResponseJson(['error' => $message],$code);
       
       // Need this so auth headers get set
       $dispatcher = $this->container->get('event_dispatcher');
@@ -110,11 +110,9 @@ class KernelApp
     // Match the route
     $matcher = $this->container->get('route_matcher');
     $match   = $matcher->match($request->getRoutePath());
-    if (!$match) die ('no match');
+    if (!$match) die ('No match for ' . $request->getRoutePath());
     
     $request->attributes->set($match);
-    
-    $attrs = $request->attributes->get();
     
     // Dispatcher
     $dispatcher = $this->container->get('event_dispatcher');

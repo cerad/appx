@@ -1,8 +1,8 @@
 <?php
 namespace Cerad\Module\RefereeModule;
 
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\JsonResponse;
+use Cerad\Component\HttpMessage\Request;
+use Cerad\Component\HttpMessage\ResponseJson;
 
 class RefereeController
 {
@@ -12,32 +12,19 @@ class RefereeController
   {
     $this->refereeRepository = $refereeRepository;
   }
-  public function mainAction(Request $request)
-  {
-    die('Not needed');
-    $id = $request->attributes->has('id') ? $request->attributes->get('id') : null;
-    
-    switch($request->getMethod())
-    {
-      case 'GET':
-      case 'OPTIONS':
-        return $id ? $this->getOneAction($request,$id) : $this->searchAction($request);
-    }
-  //echo "RefereeController mainAction $id {$request->getMethod()}\n";
-  }
-  public function searchAction($request)
+  public function searchAction(Request $request)
   {
     $items = $this->refereeRepository->findAll();
     
-    return new JsonResponse($items);
+    return new ResponseJson($items);
   }
-  public function getOneAction($request,$id)
+  public function getOneAction(Request $request,$id)
   {
     $item = $this->refereeRepository->findOne($id);
     
-    if ($item) return new JsonResponse($item);
+    if ($item) return new ResponseJson($item);
 
     // Error problem
-    return new JsonResponse(['error' => 'Item not found'],404);
+    return new ResponseJson(['error' => 'Item not found'],404);
   }
 }
