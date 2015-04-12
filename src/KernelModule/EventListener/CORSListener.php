@@ -8,6 +8,9 @@ use Cerad\Component\HttpMessage\Response;
 use Cerad\Module\KernelModule\Event\KernelRequestEvent;
 use Cerad\Module\KernelModule\Event\KernelResponseEvent;
 
+/* ========================================================
+ * http://www.html5rocks.com/en/tutorials/cors/
+ */
 class CORSListener implements EventSubscriberInterface
 {
   public static function getSubscribedEvents()

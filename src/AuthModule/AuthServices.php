@@ -41,7 +41,7 @@ class AuthServices
     });
     $container->set('jwt_coder',function($c)
     {
-      return new \Cerad\Component\JWT\JWTCoder($c->get('secret'));
+      return new \Cerad\Component\Jwt\JwtCoder($c->get('secret'));
     });
     $container->set('auth_token_listener',function($c)
     {
