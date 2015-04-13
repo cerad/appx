@@ -1,11 +1,6 @@
 {
     "name": "cerad/appx",
-    "autoload": {
-        "psr-4":  {  "Cerad\\Module\\": "src/" , "Cerad\\Component\\": "src/" }
-    },
-    "repositories": [
-        { "type": "vcs", "url": "https://github.com/cerad/http" }
-    ],
+    "autoload": { "psr-4":  {  "Cerad\\Module\\": "src/" } },
     "require": {
         "doctrine/dbal": "~2.5",
         "symfony/event-dispatcher": "~2.6",
