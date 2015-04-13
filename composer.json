@@ -4,7 +4,6 @@
         "psr-4":  {  "Cerad\\Module\\": "src/" , "Cerad\\Component\\": "src/" }
     },
     "repositories": [
-        { "type": "vcs", "url": "https://github.com/cerad/jwt"  },
         { "type": "vcs", "url": "https://github.com/cerad/http" }
     ],
     "require": {
