@@ -2,8 +2,6 @@
 
 namespace Cerad\Module\AuthModule\Tests;
 
-require __DIR__  . '/../../../vendor/autoload.php';
-
 use Cerad\Module\KernelModule\KernelContainer;
 
 use Cerad\Module\AuthModule\AuthServices;

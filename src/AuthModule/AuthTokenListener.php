@@ -39,11 +39,11 @@ class AuthTokenListener implements EventSubscriberInterface
   public function onKernelRequestAuthorize($event)
   {
     // This is basically the master firewall
-    $requestRoles = $event->getRequest()->attributes->get('_roles');
+    $requestRoles = $event->getRequest()->getAttribute('_roles');
     if (!$requestRoles) return;
 
     // Need a token
-    $authToken = $event->getRequest()->attributes->get('authToken');
+    $authToken = $event->getRequest()->getAttribute('authToken');
     if (!$authToken)
     {
       throw new AccessDeniedException();
@@ -53,7 +53,6 @@ class AuthTokenListener implements EventSubscriberInterface
     if ($this->roleHierarchy->isAuthorized($requestRoles,$userRoles)) return;
     
     throw new AccessDeniedException();
-    
   }
   /* =================================================================
    * This pull any auth token from the request header and 
@@ -63,7 +62,7 @@ class AuthTokenListener implements EventSubscriberInterface
   {
     if (!$event->isMasterRequest()) return;
     
-    $jwt = $event->getRequest()->headers->get('Authorization');
+    $jwt = $event->getRequest()->getHeaderLine('Authorization');
     
     if (!$jwt) return;
 
@@ -71,7 +70,7 @@ class AuthTokenListener implements EventSubscriberInterface
     
     $authToken = new AuthToken($jwtPayload['username'],$jwtPayload['roles']);
     
-    $event->getRequest()->attributes->set('authToken',$authToken);
+    $event->getRequest()->setAttribute('authToken',$authToken);
   }
   public function onKernelRequestRoleToken($event)
   {
@@ -85,6 +84,6 @@ class AuthTokenListener implements EventSubscriberInterface
       
     $authToken = new AuthToken('role',[strtoupper($role)]);
     
-    $event->getRequest()->attributes->set('authToken',$authToken);
+    $event->getRequest()->setAttribute('authToken',$authToken);
   }
 }

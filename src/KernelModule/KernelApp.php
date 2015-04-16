@@ -112,7 +112,7 @@ class KernelApp
     $match   = $matcher->match($request->getRoutePath());
     if (!$match) die ('No match for ' . $request->getRoutePath());
     
-    $request->attributes->set($match);
+    $request->setAttributes($match);
     
     // Dispatcher
     $dispatcher = $this->container->get('event_dispatcher');

@@ -2,17 +2,13 @@
 
 namespace Cerad\Module\AuthModule\Tests;
 
-require __DIR__  . '/../../../vendor/autoload.php';
-  
 use Cerad\Module\KernelModule\Event\KernelRequestEvent;
 
 use Cerad\Module\AuthModule\AuthToken;
 use Cerad\Module\AuthModule\AuthTokenListener;
 use Cerad\Module\AuthModule\AuthRoleHierarchy;
 
-use Cerad\Component\JWT\JWTCoder;
-
-use Symfony\Component\HttpFoundation\Request;
+use Cerad\Component\HttpMessage\Request;
 
 class AuthTokenTest extends AuthTests
 {
@@ -24,23 +20,22 @@ class AuthTokenTest extends AuthTests
   }
   public function testPostToken()
   {
-    $container  = $this->container;
-    $jwtCoder   = $container->get('jwt_coder');
-    $controller = $container->get('auth_token_controller');
+    $jwtCoder   = $this->container->get('jwt_coder');
+    $controller = $this->container->get('auth_token_controller');
 
-    $content = json_encode(['username' => 'ahundiak','password'=>'zzz']);
-    $request = Request::create('/auth/tokens','POST',[],[],[],[],$content);
+    $content = json_encode(['username' => 'ahundiak@testing.com','password'=>'zzz']);
+    $headers = ['Content-Type' => 'application/json'];
+    $request = new Request('POST /auth/tokens',$headers,$content);
     
     $response = $controller->postAction($request);
-    $this->assertEquals(202,                $response->getStatusCode());
-    $this->assertEquals('application/json', $response->headers->get('Content-Type'));
+    $this->assertEquals(201, $response->getStatusCode());
     
-    $responsePayload = json_decode($response->getContent(),true);
+    $responsePayload = json_decode($response->getBody()->getContents(),true);
     
-    $authJWT = $responsePayload['auth_token'];
+    $authJwt = $responsePayload['auth_token'];
     
-    $authPayload = $jwtCoder->decode($authJWT);
-    $this->assertEquals('ahundiak',$authPayload['username']);
+    $authPayload = $jwtCoder->decode($authJwt);
+    $this->assertEquals('ahundiak@testing.com',$authPayload['username']);
   }
   /**
    * @expectedException Symfony\Component\Security\Core\Exception\UsernameNotFoundException
@@ -48,11 +43,12 @@ class AuthTokenTest extends AuthTests
   public function testPostTokenUsernameNotFound()
   {
     $container  = $this->container;
-    $jwtCoder   = $container->get('jwt_coder');
-    $controller = $container->get('auth_token_controller');
+    $jwtCoder   = $this->container->get('jwt_coder');
+    $controller = $this->container->get('auth_token_controller');
 
     $content  = json_encode(['username' => 'ahundiakx','password'=>'zzz']);
-    $request  = Request::create('/auth/tokens','POST',[],[],[],[],$content);
+    $headers = ['Content-Type' => 'application/json'];
+    $request  = new Request('POST /auth/tokens',$headers,$content);
     $response = $controller->postAction($request);
   }
   /**
@@ -60,12 +56,12 @@ class AuthTokenTest extends AuthTests
    */
   public function testPostTokenInvalidPassword()
   {
-    $container  = $this->container;
-    $jwtCoder   = $container->get('jwt_coder');
-    $controller = $container->get('auth_token_controller');
+    $jwtCoder   = $this->container->get('jwt_coder');
+    $controller = $this->container->get('auth_token_controller');
 
-    $content  = json_encode(['username' => 'ahundiak','password'=>'zzzx']);
-    $request  = Request::create('/auth/tokens','POST',[],[],[],[],$content);
+    $content  = json_encode(['username' => 'ahundiak@testing.com','password'=>'zzzx']);
+    $headers = ['Content-Type' => 'application/json'];
+    $request  = new Request('POST /auth/tokens',$headers,$content);
     $response = $controller->postAction($request);
   }
   protected function createRoleHeirarchy()
@@ -78,23 +74,23 @@ class AuthTokenTest extends AuthTests
     ];
     return new AuthRoleHierarchy($hierarchy);
   }
-
   public function testAuthTokenListener()
   {
-    $jwtCoder = new JWTCoder('secret');
+    $jwtCoder = $this->container->get('jwt_coder');
+
     $roleHierarchy = $this->createRoleHeirarchy();
     $listener = new AuthTokenListener($roleHierarchy,$jwtCoder);
-    $jwt = $jwtCoder->encode(['username' => 'ahundiak','roles' => ['ROLE_USER']]);
+    $jwt = $jwtCoder->encode(['username' => 'ahundiak@testing.com','roles' => ['ROLE_USER']]);
     
-    $request = Request::create('/api/referees','GET');
-    $request->headers->set('Authorization',$jwt);
-    $request->attributes->set('_roles','ROLE_USER');
+    $headers = ['Authorization' => $jwt];
+    $request = new Request('GET /api/referees',$headers);
+    $request->setAttribute('_roles','ROLE_USER');
     
     $event = new KernelRequestEvent($request);
-    $listener->onKernelRequestToken($event);
+    $listener->onKernelRequestAuthToken($event);
     
-    $authToken = $request->attributes->get('authToken');
-    $this->assertEquals('ahundiak',$authToken->getUsername());
+    $authToken = $request->getAttribute('authToken');
+    $this->assertEquals('ahundiak@testing.com',$authToken->getUsername());
     
     $listener->onKernelRequestAuthorize($event);
   }
@@ -109,6 +105,5 @@ class AuthTokenTest extends AuthTests
     
     $allowedTrue = $roleHierarchy->isAuthorized(['ROLE_ASSIGNOR'],'ROLE_SRA');
     $this->assertEquals(true,$allowedTrue);
-    
   }
 }

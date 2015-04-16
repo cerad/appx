@@ -19,7 +19,7 @@ class AuthTokenController
   }
   public function postAction(Request $request)
   {
-    $requestPayload = $request->getContent();
+    $requestPayload = $request->getParsedBody();
     
     $username = $requestPayload['username'];
     $password = $requestPayload['password'];

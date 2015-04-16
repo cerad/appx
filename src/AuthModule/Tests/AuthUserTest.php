@@ -1,8 +1,6 @@
 <?php
 namespace Cerad\Module\AuthModule\Tests;
 
-require __DIR__  . '/../../../vendor/autoload.php';
-
 class AuthUserTest extends AuthTests
 {
   /* =======================================================

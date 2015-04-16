@@ -22,7 +22,7 @@ INSERT INTO users VALUES
   'C4AF1DBD-4945-4269-97A6-E2E203319D58',
   'ahundiak@testing.com','ahundiak@testing.com',
   'salt',
-  'XNdYXw/OLIHlPgJk0iaRUiFbpNUJuSNBgzMcQJgtNbYBuTAjTHgeXPaVAEPpCo6KSEjgiv0qntKfL0XU4HiCJQ==',
+  'tfNORVo3b6P0EpBzApQpxP8/B2xM/LnCnL1AbtWGDV6bmDAAPY5cpWcdF/E+RcEUXixDZM9s6lZL8LPFTN3rYw==',
   'a:2:{i:0;s:9:\"ROLE_USER\";i:4;s:16:\"ROLE_SUPER_ADMIN\";}',
   'Art Hundiak'
 ),

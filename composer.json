@@ -1,11 +1,12 @@
 {
     "name": "cerad/appx",
     "autoload": { "psr-4":  {  "Cerad\\Module\\": "src/" } },
+    "prefer-stable":      true,
+    "minimum-stability": "dev",
     "require": {
         "doctrine/dbal": "~2.5",
-        "symfony/event-dispatcher": "~2.6",
-        "symfony/security": "~2.6",
-        "psr/http-message": "0.9.*",
+        "symfony/event-dispatcher": "~2.7",
+        "symfony/security": "~2.7",
         "cerad/jwt" : "dev-master",
         "cerad/http": "dev-master"
     }
