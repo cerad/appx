@@ -15,7 +15,7 @@ class AuthUserTest extends AuthTests
     $userPasswordEncoder = $this->container->get('auth_user_password_encoder_dao');
     
     $userPasswordEncoder->isPasswordValid($user['password'],'testing',$user['salt']);
-    $userPasswordEncoder->isPasswordValid($user['password'],'pass1',  $user['salt']);
+    $userPasswordEncoder->isPasswordValid($user['password'],'zzz',    $user['salt']);
   }
   /**
    * @expectedException Symfony\Component\Security\Core\Exception\UsernameNotFoundException

@@ -30,7 +30,7 @@ class AuthTokenTest extends AuthTests
     $response = $controller->postAction($request);
     $this->assertEquals(201, $response->getStatusCode());
     
-    $responsePayload = json_decode($response->getBody()->getContents(),true);
+    $responsePayload = $response->getParsedBody();
     
     $authJwt = $responsePayload['auth_token'];
     

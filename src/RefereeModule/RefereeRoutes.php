@@ -8,12 +8,12 @@ class RefereeRoutes
     $refereeAction = function($request) use ($container)
     {
       $controller = $container->get('referee_controller');
-      $id = $request->attributes->get('id');
+      $id = $request->getAttribute('id');
       switch($request->getMethod())
       {
         case 'GET':
           return $id !== null
-            ? $controller->getOneAction($request,$request->attributes->get('id'))
+            ? $controller->getOneAction($request,$id)
             : $controller->searchAction($request);
           
         case 'POST':   return $controller->postAction  ($request);

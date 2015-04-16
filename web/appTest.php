@@ -34,12 +34,12 @@ class AppTest extends \PHPUnit_Framework_TestCase
 
     $response = $this->app->handle($request);
     
-    $item = json_decode($response->getContent(),true);
+    $item = $response->getParsedBody();
     
     $this->assertEquals($id, $item['id']);
   
   }
-  public function sestGetOneByUssfId()
+  public function testGetOneByUssfId()
   {
     $ussfId = '2014100800555735';
     
@@ -49,7 +49,7 @@ class AppTest extends \PHPUnit_Framework_TestCase
 
     $response = $this->app->handle($request);
     
-    $item = json_decode($response->getContent(),true);
+    $item = $response->getParsedBody();
     
     $this->assertEquals($ussfId, $item['ussf_id']);
     
@@ -63,18 +63,18 @@ class AppTest extends \PHPUnit_Framework_TestCase
     $this->assertEquals($url,$url2);
      
   }
-  public function sestAll()
+  public function testAll()
   {
     $request = new Request('GET ' . $this->resource . '?role=role_admin');
 
     $response = $this->app->handle($request);
     
-    $items = json_decode($response->getContent(),true);
+    $items = $response->getParsedBody();
     
     $this->assertEquals(3, count($items));
   
   }
-  public function sestCreateAuthToken()
+  public function testCreateAuthToken()
   {
     $content = json_encode(['username' => 'ahundiak@gmail.com','password'=>'zzz']);
     
@@ -84,9 +84,9 @@ class AppTest extends \PHPUnit_Framework_TestCase
     
     $response = $this->app->handle($request);
     $this->assertEquals(201,                $response->getStatusCode());
-    $this->assertEquals('application/json', $response->headers->get('Content-Type'));
+  //$this->assertEquals('application/json', $response->getHeaderLine('Content-Type'));
 
-    $responsePayload = json_decode($response->getContent(),true);
+    $responsePayload = $response->getParsedBody();
     
     $jwt = $responsePayload['auth_token'];
     
@@ -95,14 +95,14 @@ class AppTest extends \PHPUnit_Framework_TestCase
   /**
    * @depends testCreateAuthToken
    */
-  public function sestAuthRequestSuccess($jwt)
+  public function testAuthRequestSuccess($jwt)
   {
     $headers = ['Authorization' => $jwt];
     $request = new Request('GET ' . $this->resource,$headers);
     
     $response = $this->app->handle($request);
     
-    $responsePayload = json_decode($response->getContent(),true);
+    $responsePayload = $response->getParsedBody();
     
     $this->assertEquals(3,count($responsePayload));
   }
@@ -110,7 +110,7 @@ class AppTest extends \PHPUnit_Framework_TestCase
    * @depends testCreateAuthToken
    *  expectedException Symfony\Component\Security\Core\Exception\AccessDeniedException
    */
-  public function sestAuthRequestFailure($jwt)
+  public function testAuthRequestFailure($jwt)
   {
     $headers = [];
     $request = new Request('GET ' . $this->resource,$headers);

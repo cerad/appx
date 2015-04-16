@@ -121,20 +121,20 @@ class KernelApp
     $response = $this->dispatchRequest($dispatcher,$request,$requestType);
     if ($response)
     {
-    //$responsex = $this->dispatchResponse($dispatcher,$request,$response);
+      $responsex = $this->dispatchResponse($dispatcher,$request,$response);
       $requestStack->pop($request);
-      return $response;
+      return $responsex;
     }
     // Process factories
     
     // Try action function
-    $action = $request->attributes->get('_action');
+    $action = $request->getAttribute('_action');
     if ($action)
     {
       $response = $action($request);
     }
     // Try view function
-    $view = $request->attributes->get('_view');
+    $view = $request->getAttribute('_view');
     if ($view)
     {
       $response = $view($request,$response);
