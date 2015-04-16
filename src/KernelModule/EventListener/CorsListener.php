@@ -4,6 +4,7 @@ namespace Cerad\Module\KernelModule\EventListener;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 use Cerad\Component\HttpMessage\Response;
+use Cerad\Component\HttpMessage\ResponsePreflight;
 
 use Cerad\Module\KernelModule\Event\KernelRequestEvent;
 use Cerad\Module\KernelModule\Event\KernelResponseEvent;
@@ -11,7 +12,7 @@ use Cerad\Module\KernelModule\Event\KernelResponseEvent;
 /* ========================================================
  * http://www.html5rocks.com/en/tutorials/cors/
  */
-class CORSListener implements EventSubscriberInterface
+class CorsListener implements EventSubscriberInterface
 {
   public static function getSubscribedEvents()
   {
@@ -38,30 +39,38 @@ class CORSListener implements EventSubscriberInterface
   {
     if (!$event->isMasterRequest()) return;
     
-    // CORS Must have Origin header
+    // Test got Cors Preflight
     $request = $event->getRequest();
-    $this->allowOrigin = $request->headers->get('Origin');
-    if (!$this->allowOrigin) return;
     
-    // Only interested in preflights
+    if (!$request->hasHeader('Origin')) return;
+    
     if ($request->getMethod() !== 'OPTIONS') return;
-
-    // It's a prefilght
-    $response = $event->getResponse() ? $event->getResponse() : new Response();
-    $this->addCorsHeaders($response);
     
-  //if ($this->maxAge) $response->setMaxAge($this->maxAge);
+    if (!$request->hasHeader('Access-Control-Request-Method')) return;
     
+    // Assume Access-Control-Request-Method is valid, use default for caching
+    
+    $allowOrigin  = $request->getHeaderLine('Origin');
+    $allowHeaders = $request->getHeaderLine('Access-Control-Request-Header');
+    
+    $response = new ResponsePreflight($allowOrigin,$allowHeaders);
+   
     $event->setResponse($response);
     $event->stopPropagation();
   }
   public function onKernelResponse(KernelResponseEvent $event)
   {
-    if (!$event->hasResponse() || !$this->allowOrigin) return null;
+    if (!$event->hasResponse()) return;
     
     $response = $event->getResponse();
     
-    // No explicit cache control
-    $this->addCorsHeaders($response);
+    if ($response->hasHeader('Access-Control-Allow-Origin')) return;
+    
+    $allowOrigin = $event->getRequest()->getHeaderLine('Origin');
+    if (!$allowOrigin) return false;
+    
+    $responsex = $response->withHeader('Access-Control-Allow-Origin',$allowOrigin);
+    
+    $event->setResponse($responsex);
   }
 }
