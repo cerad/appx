@@ -51,7 +51,7 @@ class CorsListener implements EventSubscriberInterface
     // Assume Access-Control-Request-Method is valid, use default for caching
     
     $allowOrigin  = $request->getHeaderLine('Origin');
-    $allowHeaders = $request->getHeaderLine('Access-Control-Request-Header');
+    $allowHeaders = $request->getHeaderLine('Access-Control-Request-Headers');
     
     $response = new ResponsePreflight($allowOrigin,$allowHeaders);
    
