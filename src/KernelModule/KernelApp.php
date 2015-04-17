@@ -5,7 +5,8 @@ namespace Cerad\Module\KernelModule;
 use Cerad\Component\HttpMessage\Request;
 use Cerad\Component\HttpMessage\ResponseJson;
 
-use Cerad\Module\KernelModule\KernelContainer;
+use Cerad\Component\DependencyInjection\Container;
+
 use Cerad\Module\KernelModule\Event\KernelRequestEvent;
 use Cerad\Module\KernelModule\Event\KernelResponseEvent;
 
@@ -31,7 +32,7 @@ class KernelApp
   {
     if ($this->booted) return;
     
-    $this->container = new KernelContainer();
+    $this->container = new Container();
     
     $this->registerServices      ();
     $this->registerRoutes        ();

@@ -13,15 +13,14 @@
 >
     <testsuites>
         <testsuite name="Auth">
-            <file>./src/AuthModule/Tests/AuthUserTest.php</file>
-            <file>./src/AuthModule/Tests/AuthTokenTest.php</file>
+            <file>src/AuthModule/Tests/AuthUserTest.php</file>
+            <file>src/AuthModule/Tests/AuthTokenTest.php</file>
         </testsuite>
         <testsuite name="Web">
-            <file>./web/appTest.php</file>
+            <file>web/appTest.php</file>
         </testsuite>
         <testsuite name="Kernel">
-            <file>./src/KernelModule/EventListenet/CorsListenerTest.php</file>
-            <file>./src/KernelModule/KernelContainerTest.php</file>
+            <file>src/KernelModule/EventListenet/CorsListenerTest.php</file>
         </testsuite>
     </testsuites>
 </phpunit>

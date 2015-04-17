@@ -2,7 +2,7 @@
 
 namespace Cerad\Module\AuthModule\Tests;
 
-use Cerad\Module\KernelModule\KernelContainer;
+use Cerad\Component\DependencyInjection\Container;
 
 use Cerad\Module\AuthModule\AuthServices;
 
@@ -16,7 +16,7 @@ class AuthTests extends  \PHPUnit_Framework_TestCase
   }
   public function setUp()
   {
-    $this->container = $container = new KernelContainer();
+    $this->container = $container = new Container();
     
     $container->set('secret','someSecret');
     

@@ -7,6 +7,7 @@
         "doctrine/dbal": "~2.5",
         "symfony/event-dispatcher": "~2.7",
         "symfony/security": "~2.7",
+        "cerad/di"  : "dev-master",
         "cerad/jwt" : "dev-master",
         "cerad/http": "dev-master"
     }
