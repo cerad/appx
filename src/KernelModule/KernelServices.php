@@ -80,7 +80,7 @@ class KernelServices
     });
     $container->set('kernel_cors_listener',function()
     {
-      return new \Cerad\Module\KernelModule\EventListener\CORSListener();
+      return new \Cerad\Module\KernelModule\EventListener\CorsListener();
     },'event_listener');
   }
 
