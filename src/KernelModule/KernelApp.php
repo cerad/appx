@@ -32,46 +32,25 @@ class KernelApp
   {
     if ($this->booted) return;
     
-    $this->container = new Container();
+    $this->container = $container = new Container();
     
-    $this->registerServices      ();
-    $this->registerRoutes        ();
-    $this->registerEventListeners();
+    $this->registerServices      ($container);
+    $this->registerRoutes        ($container);
+    $this->registerEventListeners($container);
     
     $this->booted = true;
   }
-  protected function registerServices()
+  protected function registerServices($container)
   {
-    new KernelServices($this->container);
+    new KernelServices($container);
   }
   protected function registerRoutes()
   {
     return;
-    
-    $container = $this->container;
-    
-    $routes = $container->get    ('routes');
-    $tags   = $container->getTags('routes');
-    foreach($tags as $tag)
-    {
-    //echo sprintf("\nRoutes: %s\n",$tag['service_id']);
-      $routes->addCollection($container->get($tag['service_id']));
-    }
-  }
+  }    
   protected function registerEventListeners()
   {
     return;
-    
-    $container = $this->container;
-    
-    $dispatcher = $container->get    ('event_dispatcher');
-    $tags       = $container->getTags('kernel_event_listener');
-    foreach($tags as $tag)
-    {
-      echo sprintf("Tag %s\n",$tag['service_id']);
-      $listener = $container->get($tag['service_id']);
-      $dispatcher->addSubscriber($listener);
-    }
   }
   // TODO add exception wrapper
   public function handle(Request $request, $requestType = self::REQUEST_TYPE_MASTER)
