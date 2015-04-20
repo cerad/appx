@@ -4,7 +4,7 @@ namespace Cerad\Module\KernelModule;
 
 class KernelServices
 {
-  public function __construct($container)
+  public function registerServices($container)
   {
     // Me
     $container->set('kernel',$this);

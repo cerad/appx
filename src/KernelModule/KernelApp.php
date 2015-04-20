@@ -42,7 +42,8 @@ class KernelApp
   }
   protected function registerServices($container)
   {
-    new KernelServices($container);
+    $kernelServices = new KernelServices;
+    $kernelServices->registerServices($container);
   }
   protected function registerRoutes()
   {
@@ -55,6 +56,9 @@ class KernelApp
   // TODO add exception wrapper
   public function handle(Request $request, $requestType = self::REQUEST_TYPE_MASTER)
   {
+    // Boot on first request
+    if (!$this->booted) $this->boot();
+    
     try
     {
       return $this->handleRaw($request,$requestType);
@@ -78,11 +82,8 @@ class KernelApp
       return $this->dispatchResponse($dispatcher,$request,$response);
     }
   }
-  public function handleRaw(Request $request, $requestType)
+  protected function handleRaw(Request $request, $requestType)
   {
-    // Boot on first request
-    if (!$this->booted) $this->boot();
- 
     // Add request
     $requestStack = $this->container->get('request_stack');
     $requestStack->push($request);
