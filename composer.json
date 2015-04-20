@@ -1,14 +1,21 @@
 {
-    "name": "cerad/appx",
-    "autoload": { "psr-4":  {  "Cerad\\Module\\": "src/" } },
-    "prefer-stable":      true,
-    "minimum-stability": "dev",
-    "require": {
-        "doctrine/dbal": "~2.5",
-        "symfony/event-dispatcher": "~2.7",
-        "symfony/security": "~2.7",
-        "cerad/di"  : "dev-master",
-        "cerad/jwt" : "0.1.*",
-        "cerad/http": "dev-master"
-    }
+  "name": "cerad/appx",
+  "description": "Cerad Application Framework",
+  "keywords": [],
+  "homepage": "http://zayso.org",
+  "license": "MIT",
+  "authors": [{ "name": "Art Hundiak", "email": "ahundiak@gmail.com" }],
+  "autoload": { "psr-4":  {  "Cerad\\Module\\": "src/" } },
+  "prefer-stable":     true,
+  "minimum-stability": "dev",
+  "require": 
+  {
+    "php": ">=5.5.5",
+    "doctrine/dbal": "~2.5",
+    "symfony/event-dispatcher": "~2.7",
+    "symfony/security": "~2.7",
+    "cerad/di"  : "dev-master",
+    "cerad/jwt" : "0.1.*",
+    "cerad/http": "dev-master"
+  }
 }
