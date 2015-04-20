@@ -1,5 +1,6 @@
 {
   "name": "cerad/appx",
+  "type": "project",
   "description": "Cerad Application Framework",
   "keywords": [],
   "homepage": "http://zayso.org",
