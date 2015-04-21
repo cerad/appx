@@ -62,7 +62,12 @@ class AuthTokenListener implements EventSubscriberInterface
   {
     if (!$event->isMasterRequest()) return;
     
-    $jwt = $event->getRequest()->getHeaderLine('Authorization');
+    // Bearer jwt
+    $auth = $event->getRequest()->getHeaderLine('Authorization');
+    if (!$auth) return;
+    
+    $authParts = explode(' ',$auth);
+    $jwt = $authParts[count($authParts)-1];
     
     if (!$jwt) return;
 
